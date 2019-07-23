@@ -128,24 +128,23 @@ def YOLO(args):
     while True:
         prev_time = time.time()
         ret, frame_read = cap.read()
-        if(ret):
-            frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-            frame_resized = cv2.resize(frame_rgb,
-                                       (darknet.network_width(netMain),
-                                        darknet.network_height(netMain)),
-                                       interpolation=cv2.INTER_LINEAR)
+        frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
+        frame_resized = cv2.resize(frame_rgb,
+                                   (darknet.network_width(netMain),
+                                    darknet.network_height(netMain)),
+                                   interpolation=cv2.INTER_LINEAR)
 
-            darknet.copy_image_from_bytes(
-                darknet_image, frame_resized.tobytes())
+        darknet.copy_image_from_bytes(
+            darknet_image, frame_resized.tobytes())
 
-            detections = darknet.detect_image(
-                netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh)
-            image = cvDrawBoxes(detections, frame_resized)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            print(1/(time.time()-prev_time))
-            if(args.show):
-                cv2.imshow('Demo', image)
-            cv2.waitKey(3)
+        detections = darknet.detect_image(
+            netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh)
+        image = cvDrawBoxes(detections, frame_resized)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        print(1/(time.time()-prev_time))
+        if(args.show):
+            cv2.imshow('Demo', image)
+        cv2.waitKey(3)
     cap.release()
     out.release()
 
