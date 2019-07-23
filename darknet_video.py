@@ -149,7 +149,7 @@ def YOLO(args):
             image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # out.write(image)
-            print("fps: " + str(math.ciel(1/(time.time()-prev_time))))
+            print("fps: " + str(int(1/(time.time()-prev_time))))
             if(args.show):
                 cv2.imshow('Demo', image)
                 cv2.waitKey(3)
