@@ -117,6 +117,7 @@ def YOLO(args):
     cap = cv2.VideoCapture(args.source)
     cap.set(3, 1920)
     cap.set(4, 1080)
+    num_frames = cap.get(7)
     out = cv2.VideoWriter(
         args.output, cv2.VideoWriter_fourcc(*"MJPG"), 10.0,
         (darknet.network_width(netMain), darknet.network_height(netMain)))
@@ -125,17 +126,20 @@ def YOLO(args):
     # Create an image we reuse for each detect
     darknet_image = darknet.make_image(darknet.network_width(netMain),
                                        darknet.network_height(netMain), 3)
+
+    currFrame = 0
     while True:
         prev_time = time.time()
         ret, frame_read = cap.read()
         if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
             break
         if(ret):
+            currFrame += 1
             frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-            frame_resized = frame_rgb  # cv2.resize(frame_rgb,
-            #                            (darknet.network_width(netMain),
-            #                             darknet.network_height(netMain)),
-            #                            interpolation=cv2.INTER_LINEAR)
+            frame_resized = cv2.resize(frame_rgb,
+                                       (darknet.network_width(netMain),
+                                        darknet.network_height(netMain)),
+                                       interpolation=cv2.INTER_LINEAR)
 
             darknet.copy_image_from_bytes(
                 darknet_image, frame_resized.tobytes())
@@ -145,10 +149,12 @@ def YOLO(args):
             image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             # out.write(image)
-            print("fps: " + str(1/(time.time()-prev_time)))
+            print("fps: " + str(math.ciel(1/(time.time()-prev_time))))
             if(args.show):
                 cv2.imshow('Demo', image)
                 cv2.waitKey(3)
+            if(currFrame == num_frames):
+                break
     cap.release()
     out.release()
 
