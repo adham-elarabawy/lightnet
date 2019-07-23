@@ -146,7 +146,9 @@ def YOLO(args):
             print(1/(time.time()-prev_time))
             if(args.show):
                 cv2.imshow('Demo', image)
-            cv2.waitKey(3)
+                cv2.waitKey(3)
+            else:
+                break
     cap.release()
     out.release()
 
