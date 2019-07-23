@@ -126,6 +126,7 @@ def YOLO(args):
     darknet_image = darknet.make_image(darknet.network_width(netMain),
                                        darknet.network_height(netMain), 3)
     while True:
+        print(namesList)
         prev_time = time.time()
         ret, frame_read = cap.read()
         if(ret):
