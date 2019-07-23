@@ -45,7 +45,7 @@ class METADATA(Structure):
     
 
 #lib = CDLL("/home/pjreddie/documents/darknet/libdarknet.so", RTLD_GLOBAL)
-lib = CDLL("libdarknet.so", RTLD_GLOBAL)
+lib = CDLL("/mnt/nas01/workspace_share/cnn/yolo_alexey/darknet/libdarknet.so", RTLD_GLOBAL)
 lib.network_width.argtypes = [c_void_p]
 lib.network_width.restype = c_int
 lib.network_height.argtypes = [c_void_p]
@@ -148,9 +148,9 @@ if __name__ == "__main__":
     #meta = load_meta("cfg/imagenet1k.data")
     #r = classify(net, meta, im)
     #print r[:10]
-    net = load_net("../../../yolo_alexey/darknet/cfg/barcode.cfg", "../../../yolo_alexey/darknet/backup/barcode_best.weights", 0)
-    meta = load_meta("../../../yolo_alexey/darknet/cfg/t3.data")
-    r = detect(net, meta, "../../../yolo_alexey/darknet/data/dog.jpg")
+    net = load_net("cfg/barcode.cfg", "backup/barcode_best.weights", 0)
+    meta = load_meta("cfg/t3.data")
+    r = detect(net, meta, "corn_flakes_00000034.jpg")
     print r
     
 
