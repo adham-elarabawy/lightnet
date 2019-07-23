@@ -140,7 +140,7 @@ def YOLO(args):
                 darknet_image, frame_resized.tobytes())
 
             detections = darknet.detect_image(
-                netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=True)
+                netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
             print(detections)
             image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
