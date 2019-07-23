@@ -128,7 +128,7 @@ def YOLO(args):
     while True:
         prev_time = time.time()
         ret, frame_read = cap.read()
-        print(metaMain)
+        print(metaMain.classes)
         if(ret):
             frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
             frame_resized = cv2.resize(frame_rgb,
