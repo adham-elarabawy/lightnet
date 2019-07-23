@@ -28,7 +28,7 @@ def arg_parse():
                         help="NMS Threshhold", default=0.45),
     parser.add_argument("--cfg", dest='cfg', help="Config file",
                         default="cfg/yolov3.cfg", type=str),
-    parser.add_argument("--weights", dest='weightsfile', help="weightsfile",
+    parser.add_argument("--weights", dest='weights', help="weightsfile",
                         default="yolov3.weights", type=str),
     parser.add_argument("--meta", dest='data', help="path to the .data file detailing the model metadata",
                         default="cfg/model.data", type=str)
