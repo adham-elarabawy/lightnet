@@ -128,7 +128,7 @@ def YOLO(args):
     while True:
         prev_time = time.time()
         ret, frame_read = cap.read()
-        if cv2.waitKey(1):  # press q to quit
+        if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
             break
         if(ret):
             frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
