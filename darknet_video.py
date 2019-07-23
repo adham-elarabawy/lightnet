@@ -32,6 +32,8 @@ def arg_parse():
                         default="yolov3.weights", type=str),
     parser.add_argument("--meta", dest='data', help="path to the .data file detailing the model metadata",
                         default="cfg/model.data", type=str)
+    parser.add_argument("--outfps", dest='fps', help="desired framerate of the output video(with the bounding boxes on it)[LIMITED BY PROCESSING SPEED]",
+                        default=30, type=int)
     parser.add_argument('--show', dest='show', action='store_true')
     parser.add_argument('--dont_show', dest='show', action='store_false')
     parser.set_defaults(feature=False)
@@ -119,7 +121,7 @@ def YOLO(args):
     cap.set(4, 1080)
     num_frames = cap.get(7)
     out = cv2.VideoWriter(
-        args.output, cv2.VideoWriter_fourcc(*"MJPG"), 10.0,
+        args.output, cv2.VideoWriter_fourcc(*"MJPG"), args.fps,
         (darknet.network_width(netMain), darknet.network_height(netMain)))
     print("Starting the YOLO loop...")
 
