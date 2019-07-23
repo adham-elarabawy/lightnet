@@ -140,9 +140,10 @@ def YOLO(args):
 
             detections = darknet.detect_image(
                 netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh)
+            print(detections)
             image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            out.write(image)
+            # out.write(image)
             print(1/(time.time()-prev_time))
             if(args.show):
                 cv2.imshow('Demo', image)
