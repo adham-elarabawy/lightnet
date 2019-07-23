@@ -113,7 +113,7 @@ def YOLO(args):
                     pass
         except Exception:
             pass
-    #cap = cv2.VideoCapture(0)
+    # cap = cv2.VideoCapture(0)
     cap = cv2.VideoCapture(args.source)
     cap.set(3, 1920)
     cap.set(4, 1080)
@@ -139,8 +139,9 @@ def YOLO(args):
             darknet.copy_image_from_bytes(
                 darknet_image, frame_resized.tobytes())
 
-            detections = darknet.detect_image(
-                netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh)
+            detections = darknet.detect(
+                netMain, metaMain, frame_read, thresh=args.confidence, nms=args.nms_thresh)
+            # detections = darknet.detect_image(netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh)
             print(detections)
             image = cvDrawBoxes(detections, frame_resized)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
