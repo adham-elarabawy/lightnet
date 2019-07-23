@@ -77,7 +77,7 @@ def YOLO(args):
     weightPath = args.weights
     metaPath = args.data
 
-    print("**Using:\n\tCFG: " + configPath + "\n\tWeights: " +
+    print("+*Using:\n\tCFG: " + configPath + "\n\tWeights: " +
           weightPath + "\n\tMetadata: " + metaPath)
     if not os.path.exists(configPath):
         raise ValueError("Invalid config path `" +
