@@ -442,4 +442,4 @@ def performDetect(imagePath="data/dog.jpg", thresh= 0.25, configPath = "./cfg/yo
     return detections
 
 if __name__ == "__main__":
-    print(performDetect())
+    print(detect_image())
