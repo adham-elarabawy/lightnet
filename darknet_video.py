@@ -147,8 +147,8 @@ def YOLO(args):
             if(args.show):
                 cv2.imshow('Demo', image)
                 cv2.waitKey(3)
-            else:
-                break
+        if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
+            break
     cap.release()
     out.release()
 
