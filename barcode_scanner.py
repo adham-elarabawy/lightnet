@@ -69,7 +69,7 @@ def cvDrawBoxes(detections, img):
 
 
 def cropToBoundingBox(detections, img):
-    imgList = []
+    img = cv2.imread(img)
     for detection in detections:
         x, y, w, h = detection[2][0],\
             detection[2][1],\
