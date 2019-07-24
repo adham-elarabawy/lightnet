@@ -149,13 +149,12 @@ def YOLO(args):
 
     for file in os.listdir(args.source):
         image_path_list.append(os.path.join(args.source, file))
-
+    print("Starting the YOLO loop...")
     # loop through image_path_list to open each image
     for imagePath in image_path_list:
         if not imagePath.endswith("decoded.bmp"):
             frame_read = cv2.imread(imagePath)
-            print("Starting the YOLO loop...")
-
+            print(imagePath)
             # Create an image we reuse for each detect
             height, width, channels = frame_read.shape
             darknet_image = darknet.make_image(width, height, channels)
