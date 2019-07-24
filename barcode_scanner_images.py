@@ -83,12 +83,12 @@ def cropToBoundingBox(detections, img, args, imagePath):
         y2 = round(y + h/2)
         print("yolo detection: ")
         print(detection)
-        #crop_img = img[y1:y2, x1:x2]
+        crop_img = img[y1:y2, x1:x2]
         if(args.show):
-            cv2.imshow('demo', img)
+            cv2.imshow('demo', crop_img)
             cv2.waitKey(3)
         print("\n pyzbar detection: ")
-        decodedInfo = decode(img)
+        decodedInfo = decode(crop_img)
         print(decodedInfo)
         if len(decodedInfo) != 0:
             validBarcodesList.append(imagePath)
