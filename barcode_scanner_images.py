@@ -68,7 +68,10 @@ def cvDrawBoxes(detections, img):
     return img
 
 
-def cropToBoundingBox(detections, img, args):
+validBarcodesList = []
+
+
+def cropToBoundingBox(detections, img, args, imagePath):
     for detection in detections:
         x, y, w, h = detection[2][0],\
             detection[2][1],\
@@ -85,7 +88,10 @@ def cropToBoundingBox(detections, img, args):
             cv2.imshow('demo', img)
             cv2.waitKey(3)
         print("\n pyzbar detection: ")
-        print(decode(img))
+        decodedInfo = decode(img)
+        print(decodedInfo)
+        if decodedInfo.len != 0:
+            validBarcodesList.append(imagePath)
 
 
 netMain = None
@@ -163,7 +169,7 @@ def YOLO(args):
         detections = darknet.detect_image(
             netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
         print(imagePath)
-        cropToBoundingBox(detections, frame_resized, args)
+        cropToBoundingBox(detections, frame_resized, args, imagePath)
     print("Successfully finished reading barcodes!")
 
 
