@@ -106,7 +106,8 @@ def cropToBoundingBox(detections, img, args):
             img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
         decodedInfo = dcdB(frame_resized)
         if len(decodedInfo) != 0:
-            validBarcodesList.append(imagePath)
+            validBarcodesList.append(str(img))
+            print(str(img))
 
 
 netMain = None
