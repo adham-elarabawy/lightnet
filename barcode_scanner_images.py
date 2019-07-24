@@ -77,10 +77,10 @@ def cropToBoundingBox(detections, img, args, imagePath):
             detection[2][1],\
             detection[2][2],\
             detection[2][3]
-        x1 = round(x - w/2)
-        y1 = round(y - h/2)
-        x2 = round(x + w/2)
-        y2 = round(y + h/2)
+        x1 = max(0, round(x - w/2))
+        y1 = max(0, round(y - h/2))
+        x2 = max(0, round(x + w/2))
+        y2 = max(0, round(y + h/2))
         print("yolo detection: ")
         print(detection)
         print("crop to x1,y1 -> x2,y2: " + str(x1) +
