@@ -88,11 +88,11 @@ def cropToBoundingBox(detections, img, args, imagePath):
             cv2.imshow('demo', crop_img)
             cv2.waitKey(3)
         height, width, channels = img.shape
-        frame_resized = cv2.resize(
-            img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
-        decodedInfo = dcdB(frame_resized)
-        if len(decodedInfo) != 0:
-            validBarcodesList.append(imagePath)
+        # frame_resized = cv2.resize(
+        #     img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
+        # decodedInfo = dcdB(frame_resized)
+        # if len(decodedInfo) != 0:
+        #     validBarcodesList.append(imagePath)
 
 
 netMain = None
