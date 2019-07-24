@@ -80,7 +80,7 @@ def cropToBoundingBox(detections, img):
         y2 = round(y + h/2)
         print(detections)
         crop_img = img[y1:y2, x1:x2]
-        cv2.imwrite('outbarcode', crop_img)
+        cv2.imwrite('outbarcode.jpg', crop_img)
         #cv2.imshow('demo', crop_img)
         # cv2.waitKey(5000)
         print(decode(crop_img))
