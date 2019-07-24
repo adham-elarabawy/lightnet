@@ -177,4 +177,6 @@ def YOLO(args):
 
 if __name__ == "__main__":
     args = arg_parse()
+    init_time = time.time()
     YOLO(args)
+    print("time elapsed: " + str(time.time() - init_time))
