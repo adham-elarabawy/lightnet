@@ -171,6 +171,8 @@ def YOLO(args):
         print(imagePath)
         cropToBoundingBox(detections, frame_resized, args, imagePath)
     print("Successfully finished reading barcodes!")
+    print("Paths that had successful barcode reads: ")
+    print(validBarcodesList)
 
 
 if __name__ == "__main__":
