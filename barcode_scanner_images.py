@@ -90,7 +90,7 @@ def cropToBoundingBox(detections, img, args, imagePath):
         print("\n pyzbar detection: ")
         decodedInfo = decode(img)
         print(decodedInfo)
-        if decodedInfo.len() != 0:
+        if len(decodedInfo) != 0:
             validBarcodesList.append(imagePath)
 
 
