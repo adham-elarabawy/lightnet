@@ -7,7 +7,7 @@ import numpy as np
 import time
 import darknet
 import argparse
-from pyzbar.pyzbar import decode
+from pyzbar.pyzbar import decodeas dcdB
 
 
 def arg_parse():
@@ -68,19 +68,43 @@ def cvDrawBoxes(detections, img):
     return img
 
 
-def cropToBoundingBox(detections, img):
+# def cropToBoundingBox(detections, img):
+#     for detection in detections:
+#         x, y, w, h = detection[2][0],\
+#             detection[2][1],\
+#             detection[2][2],\
+#             detection[2][3]
+#         x1 = round(x - w/2)
+#         y1 = round(y - h/2)
+#         x2 = round(x + w/2)
+#         y2 = round(y + h/2)
+#         crop_img = img[y1:y2, x1:x2]
+#         cv2.imshow('demo', crop_img)
+#         print(decode(crop_img))
+
+validBarcodesList = []
+
+
+def cropToBoundingBox(detections, img, args, imagePath):
     for detection in detections:
         x, y, w, h = detection[2][0],\
             detection[2][1],\
             detection[2][2],\
             detection[2][3]
-        x1 = round(x - w/2)
-        y1 = round(y - h/2)
-        x2 = round(x + w/2)
-        y2 = round(y + h/2)
+        x1 = max(0, round(x - w/2))
+        y1 = max(0, round(y - h/2))
+        x2 = max(0, round(x + w/2))
+        y2 = max(0, round(y + h/2))
         crop_img = img[y1:y2, x1:x2]
-        cv2.imshow('demo', crop_img)
-        print(decode(crop_img))
+        if(args.show):
+            cv2.imshow('demo', crop_img)
+            cv2.waitKey(3)
+        height, width, channels = img.shape
+        frame_resized = cv2.resize(
+            img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
+        decodedInfo = dcdB(frame_resized)
+        if len(decodedInfo) != 0:
+            validBarcodesList.append(imagePath)
 
 
 netMain = None
