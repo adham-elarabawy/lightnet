@@ -85,7 +85,7 @@ def cvDrawBoxes(detections, img):
 validBarcodesList = []
 
 
-def cropToBoundingBox(detections, img, args, imagePath):
+def cropToBoundingBox(detections, img, args):
     for detection in detections:
         x, y, w, h = detection[2][0],\
             detection[2][1],\
@@ -188,7 +188,7 @@ def YOLO(args):
 
             detections = darknet.detect_image(
                 netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-            cropToBoundingBox(detections, frame_resized)
+            cropToBoundingBox(detections, frame_resized, args)
             print("fps: " + str(int(1/(time.time()-prev_time))))
             if(currFrame == num_frames):
                 print("Successfully finished reading barcodes!")
