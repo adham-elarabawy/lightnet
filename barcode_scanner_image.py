@@ -79,11 +79,9 @@ def cropToBoundingBox(detections, img):
         x2 = round(x + w/2)
         y2 = round(y + h/2)
         print(detections)
-        img = cv2.imread(img)
         crop_img = img[y1:y2, x1:x2]
-        cv2.imwrite('outbarcode.jpg', crop_img)
-        #cv2.imshow('demo', crop_img)
-        # cv2.waitKey(5000)
+        cv2.imshow('demo', crop_img)
+        cv2.waitKey(5000)
         print(decode(crop_img))
 
 
@@ -153,8 +151,13 @@ def YOLO(args):
 
     detections = darknet.detect_image(
         netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-    final_frame = cv2.cvtColor(frame_resized, cv2.COLOR_BGR2YUV)
+    cv2.imwrite('temp.jpg', frame_resized)
+    final_frame = cv2.imread('temp.jpg')
     cropToBoundingBox(detections, final_frame)
+    try:
+        os.remove('temp.jpg')
+    except:
+        pass
     print("Successfully finished reading barcodes!")
 
 
