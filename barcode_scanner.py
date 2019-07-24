@@ -160,7 +160,7 @@ def YOLO(args):
 
             detections = darknet.detect_image(
                 netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-            cropToBoundingBox(detections, frame_read)
+            cropToBoundingBox(detections, frame_resized)
             print("fps: " + str(int(1/(time.time()-prev_time))))
             if(currFrame == num_frames):
                 print("Successfully finished reading barcodes!")
