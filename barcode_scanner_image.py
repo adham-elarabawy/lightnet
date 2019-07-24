@@ -82,7 +82,7 @@ def cropToBoundingBox(detections, img):
         # crop_img = img[y1:y2, x1:x2]
         # cv2.imwrite('demo', crop_img)
         # cv2.waitKey(5000)
-        print("pyzbar detection: " + str(decode(img)))
+        print(decode(img))
 
 
 netMain = None
