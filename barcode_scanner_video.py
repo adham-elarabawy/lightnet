@@ -202,3 +202,5 @@ def YOLO(args):
 if __name__ == "__main__":
     args = arg_parse()
     YOLO(args)
+    print("Paths that had successful barcode reads: ")
+    print(validBarcodesList)
