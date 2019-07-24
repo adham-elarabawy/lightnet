@@ -35,6 +35,8 @@ def arg_parse():
                         default="cfg/model.data", type=str)
     parser.add_argument("--outfps", dest='fps', help="desired framerate of the output video(with the bounding boxes on it)[LIMITED BY PROCESSING SPEED]",
                         default=30, type=int)
+    parser.add_argument("--scale", dest='scale', help="what scale to interpolate the cropped barcode to for the pyzbar barcode decoding",
+                        default=2, type=int)
     parser.add_argument('--show', dest='show', action='store_true')
     parser.add_argument('--dont_show', dest='show', action='store_false')
     parser.set_defaults(feature=False)
