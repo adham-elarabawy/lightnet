@@ -123,11 +123,11 @@ def YOLO(args):
     darknet_image = darknet.make_image(darknet.network_width(netMain),
                                        darknet.network_height(netMain), 3)
 
-    frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-    frame_resized = cv2.resize(frame_rgb,
-                               (darknet.network_width(netMain),
-                                darknet.network_height(netMain)),
-                               interpolation=cv2.INTER_LINEAR)
+    frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2GRAY)
+    # frame_resized = cv2.resize(frame_rgb,
+    #                            (darknet.network_width(netMain),
+    #                             darknet.network_height(netMain)),
+    #                            interpolation=cv2.INTER_LINEAR)
 
     darknet.copy_image_from_bytes(
         darknet_image, frame_resized.tobytes())

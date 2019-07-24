@@ -81,17 +81,14 @@ def cropToBoundingBox(detections, img, args, imagePath):
         y1 = max(0, round(y - h/2))
         x2 = max(0, round(x + w/2))
         y2 = max(0, round(y + h/2))
-        print("yolo detection: ")
-        print(detection)
-        print("crop to x1,y1 -> x2,y2: " + str(x1) +
-              "," + str(y1) + "  " + str(x2) + "," + str(y2))
         crop_img = img[y1:y2, x1:x2]
         if(args.show):
             cv2.imshow('demo', crop_img)
             cv2.waitKey(3)
-        print("\n pyzbar detection: ")
-        decodedInfo = dcdB(crop_img)
-        print(decodedInfo)
+        height, width, channels = img.shape
+        frame_resized = cv2.resize(
+            img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
+        decodedInfo = dcdB(frame_resized)
         if len(decodedInfo) != 0:
             validBarcodesList.append(imagePath)
 
@@ -153,22 +150,23 @@ def YOLO(args):
 
     # loop through image_path_list to open each image
     for imagePath in image_path_list:
-        frame_read = cv2.imread(imagePath)
-        print("Starting the YOLO loop...")
+        if not filename.endswith("decoded.bmp"):
+            frame_read = cv2.imread(imagePath, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+            print("Starting the YOLO loop...")
 
-        # Create an image we reuse for each detect
-        height, width, channels = frame_read.shape
-        darknet_image = darknet.make_image(width, height, channels)
-        frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-        frame_resized = cv2.resize(
-            frame_rgb, (width, height), interpolation=cv2.INTER_LINEAR)
+            # Create an image we reuse for each detect
+            height, width, channels = frame_read.shape
+            darknet_image = darknet.make_image(width, height, channels)
+            # frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
+            # frame_resized = cv2.resize(
+            #     frame_rgb, (width, height), interpolation=cv2.INTER_LINEAR)
 
-        darknet.copy_image_from_bytes(darknet_image, frame_rgb.tobytes())
+            darknet.copy_image_from_bytes(darknet_image, frame_read.tobytes())
 
-        detections = darknet.detect_image(
-            netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-        print(imagePath)
-        cropToBoundingBox(detections, frame_resized, args, imagePath)
+            detections = darknet.detect_image(
+                netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+            cropToBoundingBox(detections, frame_read, args, imagePath)
+
     print("Successfully finished reading barcodes!")
     print("Paths that had successful barcode reads: ")
     print(validBarcodesList)
