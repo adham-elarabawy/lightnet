@@ -74,10 +74,10 @@ def cropToBoundingBox(detections, img):
             detection[2][1],\
             detection[2][2],\
             detection[2][3]
-        x1 = x - w/2
-        y1 = y - h/2
-        x2 = x + w/2
-        y2 = y + h/2
+        x1 = round(x - w/2)
+        y1 = round(y - h/2)
+        x2 = round(x + w/2)
+        y2 = round(y + h/2)
         crop_img = img[y1:y2, x1:x2]
         print(decode(crop_img))
 
