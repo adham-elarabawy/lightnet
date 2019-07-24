@@ -79,6 +79,7 @@ def cropToBoundingBox(detections, img):
         x2 = round(x + w/2)
         y2 = round(y + h/2)
         crop_img = img[y1:y2, x1:x2]
+        cv2.imshow('demo', crop_img)
         print(decode(crop_img))
 
 
