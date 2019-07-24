@@ -74,8 +74,7 @@ def cropToBoundingBox(detections, img):
             detection[2][1],\
             detection[2][2],\
             detection[2][3]
-        # print(decode(img[round(y+h/2):round(y-h/2),
-        # round(x-w/2):round(x+w/2)].copy()))
+        print(decode(img))
 
 
 netMain = None
