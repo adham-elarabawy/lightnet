@@ -162,6 +162,7 @@ def YOLO(args):
 
         detections = darknet.detect_image(
             netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+        print(imagePath)
         cropToBoundingBox(detections, frame_resized)
     print("Successfully finished reading barcodes!")
 
