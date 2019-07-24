@@ -161,12 +161,12 @@ def YOLO(args):
         frame_resized = cv2.resize(
             frame_rgb, (width, height), interpolation=cv2.INTER_LINEAR)
 
-        darknet.copy_image_from_bytes(darknet_image, frame_resized.tobytes())
+        darknet.copy_image_from_bytes(darknet_image, frame_rgb.tobytes())
 
         detections = darknet.detect_image(
             netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
         print(imagePath)
-        cropToBoundingBox(detections, frame_read, args, imagePath)
+        cropToBoundingBox(detections, frame_resized, args, imagePath)
     print("Successfully finished reading barcodes!")
     print("Paths that had successful barcode reads: ")
     print(validBarcodesList)
