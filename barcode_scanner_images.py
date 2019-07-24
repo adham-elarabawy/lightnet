@@ -139,7 +139,7 @@ def YOLO(args):
 
     for image in os.listdir(args.source):
         frame_read = cv2.imread(image)
-        cv2.imshow(frame_read)
+        cv2.imshow("debug", frame_read)
         print("Starting the YOLO loop...")
 
         # Create an image we reuse for each detect
