@@ -107,6 +107,7 @@ def cropToBoundingBox(detections, img, args):
         decodedInfo = dcdB(frame_resized)
         if len(decodedInfo) != 0:
             validBarcodesList.append(str(img))
+            print("-")
             print(str(img))
 
 
