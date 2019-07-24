@@ -80,9 +80,9 @@ def cropToBoundingBox(detections, img):
         y2 = round(y + h/2)
         print("yolo detection: ")
         print(detection)
-        crop_img = img[y1:y2, x1:x2]
-        cv2.imwrite('demo', crop_img)
-        cv2.waitKey(5000)
+        #crop_img = img[y1:y2, x1:x2]
+        cv2.imshow('demo', img)
+        cv2.waitKey(3)
         print("\n pyzbar detection: ")
         print(decode(img))
 
@@ -137,29 +137,24 @@ def YOLO(args):
             pass
     # cap = cv2.VideoCapture(0)
 
-    frame_read = cv2.imread(args.source)
-    print("Starting the YOLO loop...")
+    for image in os.listdir(args.source):
+        frame_read = cv2.imread(image)
+        print("Starting the YOLO loop...")
 
-    # Create an image we reuse for each detect
-    darknet_image = darknet.make_image(darknet.network_width(netMain),
-                                       darknet.network_height(netMain), 3)
-    frame_resized = cv2.resize(frame_read,
-                               (darknet.network_width(netMain),
-                                darknet.network_height(netMain)),
-                               interpolation=cv2.INTER_LINEAR)
+        # Create an image we reuse for each detect
+        darknet_image = darknet.make_image(darknet.network_width(netMain),
+                                           darknet.network_height(netMain), 3)
+        frame_resized = cv2.resize(frame_read,
+                                   (darknet.network_width(netMain),
+                                    darknet.network_height(netMain)),
+                                   interpolation=cv2.INTER_LINEAR)
 
-    darknet.copy_image_from_bytes(
-        darknet_image, frame_resized.tobytes())
+        darknet.copy_image_from_bytes(
+            darknet_image, frame_resized.tobytes())
 
-    detections = darknet.detect_image(
-        netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-    cv2.imwrite('temp.jpg', frame_resized)
-    final_frame = cv2.imread('temp.jpg')
-    cropToBoundingBox(detections, final_frame)
-    try:
-        os.remove('temp.jpg')
-    except:
-        pass
+        detections = darknet.detect_image(
+            netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+        cropToBoundingBox(detections, frame_resized)
     print("Successfully finished reading barcodes!")
 
 
