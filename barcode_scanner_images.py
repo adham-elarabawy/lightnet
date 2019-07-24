@@ -83,8 +83,8 @@ def cropToBoundingBox(detections, img, args, imagePath):
         y2 = round(y + h/2)
         print("yolo detection: ")
         print(detection)
-        print("crop to x1,y1 -> x2,y2: " + x1 +
-              "," + y1 + "  " + x2 + "," + y2)
+        print("crop to x1,y1 -> x2,y2: " + str(x1) +
+              "," + str(y1) + "  " + str(x2) + "," + str(y2))
         crop_img = img[y1:y2, x1:x2]
         if(args.show):
             cv2.imshow('demo', crop_img)
