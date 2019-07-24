@@ -7,7 +7,7 @@ import numpy as np
 import time
 import darknet
 import argparse
-from pyzbar import decode
+from pyzbar.pyzbar import decode
 
 
 def arg_parse():
