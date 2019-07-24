@@ -151,7 +151,7 @@ def YOLO(args):
     # loop through image_path_list to open each image
     for imagePath in image_path_list:
         if not imagePath.endswith("decoded.bmp"):
-            frame_read = cv2.imread(imagePath, cv2.CV_LOAD_IMAGE_GRAYSCALE)
+            frame_read = cv2.imread(imagePath)
             print("Starting the YOLO loop...")
 
             # Create an image we reuse for each detect
