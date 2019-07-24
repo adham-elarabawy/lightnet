@@ -75,8 +75,8 @@ def cropToBoundingBox(detections, img):
             detection[2][1],\
             detection[2][2],\
             detection[2][3]
-        print(decode(img[int(y+h/2):int(y-h/2),
-                         int(x-w/2):int(x+w/2)].copy()))
+        print(decode(img[round(y+h/2):round(y-h/2),
+                         round(x-w/2):round(x+w/2)].copy()))
 
 
 netMain = None
@@ -160,7 +160,7 @@ def YOLO(args):
 
             detections = darknet.detect_image(
                 netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-            cropToBoundingBox(detections, frame_resized)
+            cropToBoundingBox(detections, frame_read)
             print("fps: " + str(int(1/(time.time()-prev_time))))
             if(currFrame == num_frames):
                 print("Successfully finished reading barcodes!")
