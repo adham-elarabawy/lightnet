@@ -137,8 +137,14 @@ def YOLO(args):
             pass
     # cap = cv2.VideoCapture(0)
 
-    for image in os.listdir(args.source):
-        frame_read = cv2.imread(image)
+    image_path_list = []
+
+    for file in os.listdir(args.source):
+        image_path_list.append(os.path.join(args.source, file))
+
+    # loop through image_path_list to open each image
+    for imagePath in image_path_list:
+        frame_read = cv2.imread(imagePath)
         cv2.imshow("debug", frame_read)
         print("Starting the YOLO loop...")
 
