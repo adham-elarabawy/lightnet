@@ -75,7 +75,7 @@ def cropToBoundingBox(detections, img):
             detection[2][1],\
             detection[2][2],\
             detection[2][3]
-          imgList.append(img[(y+h/2):(y-h/2), (x-w/2):(x+w/2)].copy())
+        imgList.append(img[(y+h/2):(y-h/2), (x-w/2):(x+w/2)].copy())
     return imgList
 
 
