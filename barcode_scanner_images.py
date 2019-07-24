@@ -71,27 +71,27 @@ def cvDrawBoxes(detections, img):
 validBarcodesList = []
 
 
-def cropToBoundingBox(detections, img, args, imagePath):
-    for detection in detections:
-        x, y, w, h = detection[2][0],\
-            detection[2][1],\
-            detection[2][2],\
-            detection[2][3]
-        x1 = round(x - w/2)
-        y1 = round(y - h/2)
-        x2 = round(x + w/2)
-        y2 = round(y + h/2)
-        print("yolo detection: ")
-        print(detection)
+def cropToBoundingBox(img, args, imagePath):
+    # for detection in detections:
+    #     x, y, w, h = detection[2][0],\
+    #         detection[2][1],\
+    #         detection[2][2],\
+    #         detection[2][3]
+    #     x1 = round(x - w/2)
+    #     y1 = round(y - h/2)
+    #     x2 = round(x + w/2)
+    #     y2 = round(y + h/2)
+    #     print("yolo detection: ")
+    #     print(detection)
         #crop_img = img[y1:y2, x1:x2]
-        if(args.show):
-            cv2.imshow('demo', img)
-            cv2.waitKey(3)
-        print("\n pyzbar detection: ")
-        decodedInfo = decode(img)
-        print(decodedInfo)
-        if len(decodedInfo) != 0:
-            validBarcodesList.append(imagePath)
+    if(args.show):
+        cv2.imshow('demo', img)
+        cv2.waitKey(3)
+    print("\n pyzbar detection: ")
+    decodedInfo = decode(img)
+    print(decodedInfo)
+    if len(decodedInfo) != 0:
+        validBarcodesList.append(imagePath)
 
 
 netMain = None
