@@ -250,6 +250,10 @@ def YOLO(args):
                     break
         cap.release()
         out.release()
+        index = 0
+        for time in profile:
+            profile[index] = time/num_frames
+            index += 1
         print(profile)
 
     if fileType == 1:  # input is an image
