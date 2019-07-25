@@ -70,20 +70,6 @@ def cvDrawBoxes(detections, img):
     return img
 
 
-# def cropToBoundingBox(detections, img):
-#     for detection in detections:
-#         x, y, w, h = detection[2][0],\
-#             detection[2][1],\
-#             detection[2][2],\
-#             detection[2][3]
-#         x1 = round(x - w/2)
-#         y1 = round(y - h/2)
-#         x2 = round(x + w/2)
-#         y2 = round(y + h/2)
-#         crop_img = img[y1:y2, x1:x2]
-#         cv2.imshow('demo', crop_img)
-#         print(decode(crop_img))
-
 validBarcodesList = []
 
 
