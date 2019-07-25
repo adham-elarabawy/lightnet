@@ -16,6 +16,8 @@ DEBUG_PRINT = True  # set to True to enable all debug prints and output paths
 supportedVideoFormats = ['mkv', 'avi', 'mov', 'mp4']
 supportedImageFormats = ['png', 'jpg', 'jpeg', 'bmp']
 validBarcodesList = []
+profile = [0, 0, 0, 0]
+tempPrev = 0
 
 
 def arg_parse():
@@ -122,7 +124,7 @@ def cropToBoundingBox(detections, img, args, imagePath):
             validBarcodesList.append(imagePath)
 
 
-def processFrame(frameToProcess, args, darknet_image, netMain):
+def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     # frame = cv2.cvtColor(
     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
@@ -130,13 +132,14 @@ def processFrame(frameToProcess, args, darknet_image, netMain):
             netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
     darknet.copy_image_from_bytes(
         darknet_image, frameToProcess.tobytes())
-
+    profile[1] = profile[1] + (time.time() - tempPrev)
+    tempPrev = time.time()
     detections = darknet.detect_image(
         netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
 
     # draw bounding boxes on the processed frame
     markedImage = cvDrawBoxes(detections, frameToProcess)
-
+    profile[2] = profile[2] + (time.time() - tempPrev)
     # convert colorspace back to rgb from opencv native
     return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
@@ -228,11 +231,15 @@ def YOLO(args):
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             if(ret):
+                profile[0] = profile[0] + (time.time() - prev_time)
+                tempPrev = time.time()
                 currFrame += 1
                 processedFrame = processFrame(
-                    frame_read, args, darknet_image, netMain)
+                    frame_read, args, darknet_image, netMain, tempPrev)
+                tempPrev = time.time()
                 # add processed frame to the output file
                 out.write(processedFrame)
+                profile[3] = profile[3] + (time.time() - tempPrev)
                 print('fps: ' + str(int(1/(time.time()-prev_time))) +
                       ' frames processed: ' + str(currFrame) + '/' + str(num_frames), end='\r')
                 sys.stdout.flush()
@@ -243,6 +250,7 @@ def YOLO(args):
                     break
         cap.release()
         out.release()
+        print(profile)
 
     if fileType == 1:  # input is an image
         if DEBUG_PRINT:
