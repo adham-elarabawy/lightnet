@@ -210,7 +210,7 @@ def YOLO(args):
                 # add processed frame to the output file
                 out.write(processedFrame)
                 print('fps: ' + str(int(1/(time.time()-prev_time))) +
-                      ' frames processed: ' + str(currFrame) + '/' + num_frames, end='\r')
+                      ' frames processed: ' + str(currFrame) + '/' + str(num_frames), end='\r')
                 sys.stdout.flush()
                 if(args.show):
                     cv2.imshow('Demo', processedFrame)
