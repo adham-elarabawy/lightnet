@@ -17,7 +17,7 @@ supportedVideoFormats = ['mkv', 'avi', 'mov', 'mp4']
 supportedImageFormats = ['png', 'jpg', 'jpeg', 'bmp']
 validBarcodesList = []
 profile = [0, 0, 0, 0]
-tempPrev = 0
+tempPrev = time.time()
 
 
 def arg_parse():
