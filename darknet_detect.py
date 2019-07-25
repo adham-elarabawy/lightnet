@@ -209,7 +209,8 @@ def YOLO(args):
                     frame_read, args, darknet_image, netMain)
                 # add processed frame to the output file
                 out.write(processedFrame)
-                print('fps: ' + str(int(1/(time.time()-prev_time))), end='\r')
+                print('fps: ' + str(int(1/(time.time()-prev_time))) +
+                      ' frames processed: ' + currFrame, end='\r')
                 sys.stdout.flush()
                 if(args.show):
                     cv2.imshow('Demo', processedFrame)
