@@ -54,10 +54,10 @@ def arg_parse():
 
 
 def checkType(source):
-    kind = filetype.guess(source)
     if os.path.isdir(source):
         return 2  # input is a directory
-    elif os.path.isfile(source):
+    kind = filetype.guess(source)
+    if os.path.isfile(source):
         if kind is None:
             return -1  # input is not a supported type/format
         for videoType in supportedVideoFormats:
