@@ -138,7 +138,7 @@ def YOLO(args):
     #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     if(args.show):
         cv2.imshow('Demo', image)
-        cv2.waitKey(3000)
+        cv2.waitKey(10000)
     print("Successfully finished and exported to: " + args.output)
 
 
