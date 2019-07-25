@@ -180,6 +180,7 @@ if __name__ == "__main__":
     kind = filetype.guess(args.source)
     if kind is None:
         print('Cannot guess file type!')
+    print('File kidn: %s' % kind)
     print('File extension: %s' % kind.extension)
     print('File MIME type: %s' % kind.mime)
     YOLO(args)
