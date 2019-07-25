@@ -173,7 +173,7 @@ def YOLO(args):
         inputType = filetype.guess(args.source)  # file type of the input image
         output = args.output
         if output == '___':
-            print(str(inputType))
+            print(str(inputType.extension))
             toStrip = len(str(inputType)) + 1
             output = args.source[:-toStrip] + '_proc.' + inputType
 
