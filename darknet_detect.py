@@ -174,7 +174,8 @@ def YOLO(args):
         output = args.output
         if output == '___':
             toStrip = len(str(inputType.extension)) + 1
-            output = args.source[:-toStrip] + '_proc.' + inputType
+            output = args.source[:-toStrip] + \
+                '_proc.' + str(inputType.extension)
 
     if fileType == -1:
         print('Input is not a supported image or video format. Try running the python script with: --help for more information')
@@ -247,8 +248,8 @@ def YOLO(args):
         for imagePath in image_path_list:
             # determine output path for processed frame
             inputType = filetype.guess(imagePath)
-            toStrip = len(inputType) + 1
-            output = imagePath[:-toStrip] + '_proc.' + inputType
+            toStrip = len(str(inputType.extension)) + 1
+            output = imagePath[:-toStrip] + '_proc.' + str(inputType.extension)
 
             frame_read = cv2.imread(args.source)
             height, width, channels = frame_read.shape
