@@ -4,7 +4,7 @@ import random
 import os
 import cv2
 import numpy as np
-import time
+import time as _time
 import darknet
 import argparse
 import sys
@@ -17,7 +17,7 @@ supportedVideoFormats = ['mkv', 'avi', 'mov', 'mp4']
 supportedImageFormats = ['png', 'jpg', 'jpeg', 'bmp']
 validBarcodesList = []
 profile = [0, 0, 0, 0]
-tempPrev = time.time()
+tempPrev = _time.time()
 
 
 def arg_parse():
@@ -132,14 +132,14 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
             netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
     darknet.copy_image_from_bytes(
         darknet_image, frameToProcess.tobytes())
-    profile[1] = profile[1] + (time.time() - tempPrev)
-    tempPrev = time.time()
+    profile[1] = profile[1] + (_time.time() - tempPrev)
+    tempPrev = _time.time()
     detections = darknet.detect_image(
         netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
 
     # draw bounding boxes on the processed frame
     markedImage = cvDrawBoxes(detections, frameToProcess)
-    profile[2] = profile[2] + (time.time() - tempPrev)
+    profile[2] = profile[2] + (_time.time() - tempPrev)
     # convert colorspace back to rgb from opencv native
     return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
@@ -219,7 +219,7 @@ def YOLO(args):
 
         currFrame = 0
         while True:
-            prev_time = time.time()
+            prev_time = _time.time()
             ret, frame_read = cap.read()
             if currFrame == 0:
                 height, width, channels = frame_read.shape
@@ -231,16 +231,16 @@ def YOLO(args):
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             if(ret):
-                profile[0] = profile[0] + (time.time() - prev_time)
-                tempPrev = time.time()
+                profile[0] = profile[0] + (_time.time() - prev_time)
+                tempPrev = _time.time()
                 currFrame += 1
                 processedFrame = processFrame(
                     frame_read, args, darknet_image, netMain, tempPrev)
-                tempPrev = time.time()
+                tempPrev = _time.time()
                 # add processed frame to the output file
                 out.write(processedFrame)
-                profile[3] = profile[3] + (time.time() - tempPrev)
-                print('fps: ' + str(int(1/(time.time()-prev_time))) +
+                profile[3] = profile[3] + (_time.time() - tempPrev)
+                print('fps: ' + str(int(1/(_time.time()-prev_time))) +
                       ' frames processed: ' + str(currFrame) + '/' + str(num_frames), end='\r')
                 sys.stdout.flush()
                 if(args.show):
