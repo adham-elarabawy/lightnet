@@ -135,7 +135,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain):
         netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
 
     # draw bounding boxes on the processed frame
-    markedImage = cvDrawBoxes(detections, frame)
+    markedImage = cvDrawBoxes(detections, frameToProcess)
 
     # convert colorspace back to rgb from opencv native
     return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
