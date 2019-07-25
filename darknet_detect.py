@@ -168,14 +168,14 @@ def YOLO(args):
         except Exception:
             pass
 
-    inputType = filetype.guess(args.source)  # file type of the input image
-
     fileType = checkType(args.source)
-
-    output = args.output
-    if output == '___':
-        toStrip = len(inputType) + 1
-        output = args.source[:-toStrip] + '_proc.' + inputType
+    if not fileType == 2:
+        inputType = filetype.guess(args.source)  # file type of the input image
+        output = args.output
+        if output == '___':
+            print(str(inputType))
+            toStrip = len(str(inputType)) + 1
+            output = args.source[:-toStrip] + '_proc.' + inputType
 
     if fileType == -1:
         print('Input is not a supported image or video format. Try running the python script with: --help for more information')
