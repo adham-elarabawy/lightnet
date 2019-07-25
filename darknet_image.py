@@ -18,7 +18,7 @@ def arg_parse():
     parser = argparse.ArgumentParser(description='YOLO v3 Detection Module')
 
     parser.add_argument("--out", dest='output', help="video path to store the video in(include the desired video name and type[avi])",
-                        default="output.avi", type=str),
+                        default="output.png", type=str),
     parser.add_argument("--src", dest='source', help="path of the video that the model is being tested on(include the desired video name and type)",
                         default="input.avi", type=str),
     parser.add_argument("--bs", dest="bs", help="Batch size", default=1)
