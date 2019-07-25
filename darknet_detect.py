@@ -16,7 +16,7 @@ DEBUG_PRINT = True  # set to True to enable all debug prints and output paths
 supportedVideoFormats = ['mkv', 'avi', 'mov', 'mp4']
 supportedImageFormats = ['png', 'jpg', 'jpeg', 'bmp']
 validBarcodesList = []
-profile = [0, 0, 0, 0]
+profile = [0, 0, 0, 0, 0]
 tempPrev = _time.time()
 
 
@@ -136,10 +136,11 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     tempPrev = _time.time()
     detections = darknet.detect_image(
         netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-
+    profile[2] = profile[2] + (_time.time() - tempPrev)
+    tempPrev = _time.time()
     # draw bounding boxes on the processed frame
     markedImage = cvDrawBoxes(detections, frameToProcess)
-    profile[2] = profile[2] + (_time.time() - tempPrev)
+    profile[3] = profile[3] + (_time.time() - tempPrev)
     # convert colorspace back to rgb from opencv native
     return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
@@ -239,7 +240,7 @@ def YOLO(args):
                 tempPrev = _time.time()
                 # add processed frame to the output file
                 out.write(processedFrame)
-                profile[3] = profile[3] + (_time.time() - tempPrev)
+                profile[4] = profile[4] + (_time.time() - tempPrev)
                 print('fps: ' + str(int(1/(_time.time()-prev_time))) +
                       ' frames processed: ' + str(currFrame) + '/' + str(num_frames), end='\r')
                 sys.stdout.flush()
@@ -250,10 +251,10 @@ def YOLO(args):
                     break
         cap.release()
         out.release()
-        index = 0
-        for time in profile:
-            profile[index] = time/num_frames
-            index += 1
+        # index = 0
+        # for time in profile:
+        #     profile[index] = time/num_frames
+        #     index += 1
         print(profile)
 
     if fileType == 1:  # input is an image
