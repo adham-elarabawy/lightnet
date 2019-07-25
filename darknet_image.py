@@ -130,11 +130,11 @@ def YOLO(args):
     #                            interpolation=cv2.INTER_LINEAR)
 
     darknet.copy_image_from_bytes(
-        darknet_image, frame_resized.tobytes())
+        darknet_image, frame_rgb.tobytes())
 
     detections = darknet.detect_image(
         netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-    image = cvDrawBoxes(detections, frame_resized)
+    image = cvDrawBoxes(detections, frame_rgb)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     if(args.show):
         cv2.imshow('Demo', image)
