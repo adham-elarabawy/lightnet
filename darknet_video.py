@@ -7,36 +7,41 @@ import numpy as np
 import time
 import darknet
 import argparse
+import sys
+import filetype
 
 
 def arg_parse():
     """
-    Parse arguements to the detect module
+    Parse arguments to the detect module
 
     """
 
     parser = argparse.ArgumentParser(description='YOLO v3 Detection Module')
 
-    parser.add_argument("--out", dest='output', help="video path to store the video in(include the desired video name and type[avi])",
-                        default="output.avi", type=str),
-    parser.add_argument("--src", dest='source', help="path of the video that the model is being tested on(include the desired video name and type)",
-                        default="input.avi", type=str),
+    parser.add_argument("--out", dest='output', help="path to store the output in(include the desired filename and filetype) // video:.avi, image:.png, directory:directoryname",
+                        default="___", type=str),
+    parser.add_argument("--src", dest='source', help="path of the file/directory(of images) that the model is being tested on(include the filename and filetype) [SET TO 0 FOR WEBCAM USE(not tested)] \n *If passing in directory, ALL files in directory MUST BE valid images",
+                        required=True, type=str),
     parser.add_argument("--bs", dest="bs", help="Batch size", default=1)
     parser.add_argument("--confidence", dest="confidence",
                         help="Object Confidence to filter predictions", default=0.25)
     parser.add_argument("--nms_thresh", dest="nms_thresh",
                         help="NMS Threshhold", default=0.45),
     parser.add_argument("--cfg", dest='cfg', help="Config file",
-                        default="cfg/yolov3.cfg", type=str),
+                        required=True, type=str),
     parser.add_argument("--weights", dest='weights', help="weightsfile",
-                        default="yolov3.weights", type=str),
+                        required=True, type=str),
     parser.add_argument("--meta", dest='data', help="path to the .data file detailing the model metadata",
-                        default="cfg/model.data", type=str)
+                        required=True, type=str)
     parser.add_argument("--outfps", dest='fps', help="desired framerate of the output video(with the bounding boxes on it)[LIMITED BY PROCESSING SPEED]",
                         default=30, type=int)
-    parser.add_argument('--show', dest='show', action='store_true')
-    parser.add_argument('--dont_show', dest='show', action='store_false')
-    parser.set_defaults(feature=False)
+    parser.add_argument('--show', dest='show', action='store_true',
+                        help='show the frames as they are being processed(LOWERS PERFORMANCE SIGNIFICANTLY)')
+    parser.add_argument('--resize', dest='resize', action='store_true',
+                        help='resize processed frames to dimensions of the neural network')
+    parser.set_defaults(show=False)
+    parser.set_defaults(resize=False)
     return parser.parse_args()
 
 
@@ -65,6 +70,25 @@ def cvDrawBoxes(detections, img):
                     (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     [0, 255, 0], 2)
     return img
+
+
+def processFrame(frameToProcess, args, darknet_image, netMain, ):
+    frame = cv2.cvtColor(
+        frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
+    if(args.resize):
+        frame = cv2.resize(frame, (darknet.network_width(netMain), darknet.network_height(
+            netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
+    darknet.copy_image_from_bytes(
+        darknet_image, frame.tobytes())
+
+    detections = darknet.detect_image(
+        netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+
+    # draw bounding boxes on the processed frame
+    markedImage = cvDrawBoxes(detections, frame)
+
+    # convert colorspace back to rgb from opencv native
+    return cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
 
 netMain = None
@@ -115,8 +139,8 @@ def YOLO(args):
                     pass
         except Exception:
             pass
-    # cap = cv2.VideoCapture(0)
-    cap = cv2.VideoCapture(args.source)
+
+    cap = cv2.VideoCapture(args.source)  # set to 0 to use webcam input
     cap.set(3, 1920)
     cap.set(4, 1080)
     num_frames = cap.get(7)
@@ -137,23 +161,13 @@ def YOLO(args):
             break
         if(ret):
             currFrame += 1
-            frame_rgb = cv2.cvtColor(frame_read, cv2.COLOR_BGR2RGB)
-            frame_resized = cv2.resize(frame_rgb,
-                                       (darknet.network_width(netMain),
-                                        darknet.network_height(netMain)),
-                                       interpolation=cv2.INTER_LINEAR)
-
-            darknet.copy_image_from_bytes(
-                darknet_image, frame_resized.tobytes())
-
-            detections = darknet.detect_image(
-                netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-            image = cvDrawBoxes(detections, frame_resized)
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            out.write(image)
-            print("fps: " + str(int(1/(time.time()-prev_time))))
+            processedFrame = processFrame(
+                frame_read, args, darknet_image, netMain)
+            out.write(processedFrame)  # add processed frame to the output file
+            print("fps: " + str(int(1/(time.time()-prev_time))), end='\r')
+            sys.stdout.flush()
             if(args.show):
-                cv2.imshow('Demo', image)
+                cv2.imshow('Demo', processedFrame)
             if(currFrame == num_frames):
                 print("Successfully finished and exported to: " + args.output)
                 break
@@ -163,4 +177,9 @@ def YOLO(args):
 
 if __name__ == "__main__":
     args = arg_parse()
+    kind = filetype.guess(args.source)
+    if kind is None:
+        print('Cannot guess file type!')
+    print('File extension: %s' % kind.extension)
+    print('File MIME type: %s' % kind.mime)
     YOLO(args)
