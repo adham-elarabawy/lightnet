@@ -9,11 +9,13 @@ import darknet
 import argparse
 import sys
 import filetype
+from pyzbar.pyzbar import decode as dcdB
 
 DEBUG_PRINT = True  # set to True to enable all debug prints and output paths
 
 supportedVideoFormats = ['mkv', 'avi', 'mov', 'mp4']
 supportedImageFormats = ['png', 'jpg', 'jpeg', 'bmp']
+validBarcodesList = []
 
 
 def arg_parse():
@@ -98,14 +100,36 @@ def cvDrawBoxes(detections, img):
     return img
 
 
+def cropToBoundingBox(detections, img, args, imagePath):
+    for detection in detections:
+        x, y, w, h = detection[2][0],\
+            detection[2][1],\
+            detection[2][2],\
+            detection[2][3]
+        x1 = max(0, round(x - w/2))
+        y1 = max(0, round(y - h/2))
+        x2 = max(0, round(x + w/2))
+        y2 = max(0, round(y + h/2))
+        crop_img = img[y1:y2, x1:x2]
+        if(args.show):
+            cv2.imshow('demo', crop_img)
+            cv2.waitKey(3)
+        height, width, channels = img.shape
+        frame_resized = cv2.resize(
+            img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
+        decodedInfo = dcdB(frame_resized)
+        if len(decodedInfo) != 0:
+            validBarcodesList.append(imagePath)
+
+
 def processFrame(frameToProcess, args, darknet_image, netMain):
-    frame = cv2.cvtColor(
-        frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
+    # frame = cv2.cvtColor(
+    #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
         frame = cv2.resize(frame, (darknet.network_width(netMain), darknet.network_height(
             netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
     darknet.copy_image_from_bytes(
-        darknet_image, frame.tobytes())
+        darknet_image, frameToProcess.tobytes())
 
     detections = darknet.detect_image(
         netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
@@ -114,7 +138,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain):
     markedImage = cvDrawBoxes(detections, frame)
 
     # convert colorspace back to rgb from opencv native
-    return cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
+    return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
 
 netMain = None
