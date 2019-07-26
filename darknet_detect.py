@@ -129,27 +129,27 @@ def cropToBoundingBox(detections, img, args, imagePath):
             validBarcodesList.append(imagePath)
 
 
-def processFrame(frameToProcess, args, netMain):
-    print('processFrame was called')
-    darknet_image = darknet.make_image(1920, 1080, 3)
-    # frame = cv2.cvtColor(
-    #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
-    if(args.resize):
-        frame = cv2.resize(frame, (darknet.network_width(netMain), darknet.network_height(
-            netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
-    darknet.copy_image_from_bytes(
-        darknet_image, frameToProcess.tobytes())
-    # profile[1] = profile[1] + (_time.time() - tempPrev)
-    # tempPrev = _time.time()
-    detections = darknet.detect_image(
-        netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-    # profile[2] = profile[2] + (_time.time() - tempPrev)
-    # tempPrev = _time.time()
-    # draw bounding boxes on the processed frame
-    markedImage = cvDrawBoxes(detections, frameToProcess)
-    # profile[3] = profile[3] + (_time.time() - tempPrev)
-    # convert colorspace back to rgb from opencv native
-    out.write(markedImage)  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
+# def processFrame(frameToProcess, args, netMain):
+#     print('processFrame was called')
+#     darknet_image = darknet.make_image(1920, 1080, 3)
+#     # frame = cv2.cvtColor(
+#     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
+#     if(args.resize):
+#         frame = cv2.resize(frame, (darknet.network_width(netMain), darknet.network_height(
+#             netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
+#     darknet.copy_image_from_bytes(
+#         darknet_image, frameToProcess.tobytes())
+#     # profile[1] = profile[1] + (_time.time() - tempPrev)
+#     # tempPrev = _time.time()
+#     detections = darknet.detect_image(
+#         netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+#     # profile[2] = profile[2] + (_time.time() - tempPrev)
+#     # tempPrev = _time.time()
+#     # draw bounding boxes on the processed frame
+#     markedImage = cvDrawBoxes(detections, frameToProcess)
+#     # profile[3] = profile[3] + (_time.time() - tempPrev)
+#     # convert colorspace back to rgb from opencv native
+#     out.write(markedImage)  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
 
 netMain = None
@@ -158,6 +158,28 @@ altNames = None
 
 
 def YOLO(args):
+
+    def processFrame(frameToProcess, args, netMain):
+        print('processFrame was called')
+        darknet_image = darknet.make_image(1920, 1080, 3)
+        # frame = cv2.cvtColor(
+        #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
+        if(args.resize):
+            frame = cv2.resize(frame, (darknet.network_width(netMain), darknet.network_height(
+                netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
+        darknet.copy_image_from_bytes(
+            darknet_image, frameToProcess.tobytes())
+        # profile[1] = profile[1] + (_time.time() - tempPrev)
+        # tempPrev = _time.time()
+        detections = darknet.detect_image(
+            netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+        # profile[2] = profile[2] + (_time.time() - tempPrev)
+        # tempPrev = _time.time()
+        # draw bounding boxes on the processed frame
+        markedImage = cvDrawBoxes(detections, frameToProcess)
+        # profile[3] = profile[3] + (_time.time() - tempPrev)
+        # convert colorspace back to rgb from opencv native
+        out.write(markedImage)  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
     global metaMain, netMain, altNames
     configPath = args.cfg
