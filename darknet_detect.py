@@ -130,6 +130,7 @@ def cropToBoundingBox(detections, img, args, imagePath):
 
 
 def processFrame(frameToProcess, args, darknet_image, netMain):
+    print('processFrame was called')
     # frame = cv2.cvtColor(
     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
@@ -231,10 +232,6 @@ def YOLO(args):
 
         threaded_mode = True
 
-        latency = StatValue()
-        frame_interval = StatValue()
-        last_frame_time = clock()
-
         currFrame = 0
         darknet_image = darknet.make_image(1920, 1080, 3)
         out = cv2.VideoWriter(
@@ -245,25 +242,16 @@ def YOLO(args):
             # _________
             while len(pending) > 0 and pending[0].ready():
                 res, t0 = pending.popleft().get()
-                latency.update(clock() - t0)
-                draw_str(res, (20, 20), "threaded      :  " +
-                         str(threaded_mode))
-                draw_str(res, (20, 40), "latency        :  %.1f ms" %
-                         (latency.value*1000))
-                draw_str(res, (20, 60), "frame interval :  %.1f ms" %
-                         (frame_interval.value*1000))
             if len(pending) < threadn:
                 ret, frame = cap.read()
                 t = clock()
-                frame_interval.update(t - last_frame_time)
-                last_frame_time = t
                 task = pool.apply_async(
                     processFrame, (frame_read, args, darknet_image, netMain))
                 pending.append(task)
             ch = cv2.waitKey(1)
             if ch == 27:
                 break
-
+            print('Done')
             # _________
             # if currFrame == 0:
             #height, width, channels = frame_read.shape
