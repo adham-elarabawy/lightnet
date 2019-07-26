@@ -129,8 +129,9 @@ def cropToBoundingBox(detections, img, args, imagePath):
             validBarcodesList.append(imagePath)
 
 
-def processFrame(frameToProcess, args, darknet_image, netMain):
+def processFrame(frameToProcess, args, netMain):
     print('processFrame was called')
+    darknet_image = darknet.make_image(1920, 1080, 3)
     # frame = cv2.cvtColor(
     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
@@ -233,7 +234,7 @@ def YOLO(args):
         threaded_mode = True
 
         currFrame = 0
-        darknet_image = darknet.make_image(1920, 1080, 3)
+        # darknet_image = darknet.make_image(1920, 1080, 3)
         out = cv2.VideoWriter(
             output, cv2.VideoWriter_fourcc(*'MJPG'), args.fps, (1920, 1080))
         while True:
@@ -246,7 +247,7 @@ def YOLO(args):
                 ret, frame = cap.read()
                 t = clock()
                 task = pool.apply_async(
-                    processFrame, (frame_read, args, darknet_image, netMain))
+                    processFrame, (frame_read, args, netMain))
                 pending.append(task)
             ch = cv2.waitKey(1)
             if ch == 27:
