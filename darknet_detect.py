@@ -14,7 +14,6 @@ from multiprocessing.pool import ThreadPool
 from collections import deque
 
 from common import clock, draw_str, StatValue
-import video
 
 DEBUG_PRINT = True  # set to True to enable all debug prints and output paths
 
