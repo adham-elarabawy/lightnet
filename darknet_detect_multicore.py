@@ -10,6 +10,10 @@ import argparse
 import sys
 import filetype
 from pyzbar.pyzbar import decode as dcdB
+from multiprocessing.pool import ThreadPool
+from collections import deque
+
+from common import clock, draw_str, StatValue
 
 DEBUG_PRINT = True  # set to True to enable all debug prints and output paths
 
@@ -18,6 +22,7 @@ supportedImageFormats = ['png', 'jpg', 'jpeg', 'bmp']
 validBarcodesList = []
 profile = [0, 0, 0, 0, 0]
 tempPrev = _time.time()
+out = 0
 
 
 def arg_parse():
@@ -124,25 +129,27 @@ def cropToBoundingBox(detections, img, args, imagePath):
             validBarcodesList.append(imagePath)
 
 
-def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
-    # frame = cv2.cvtColor(
-    #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
-    if(args.resize):
-        frame = cv2.resize(frame, (darknet.network_width(netMain), darknet.network_height(
-            netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
-    darknet.copy_image_from_bytes(
-        darknet_image, frameToProcess.tobytes())
-    profile[1] = profile[1] + (_time.time() - tempPrev)
-    tempPrev = _time.time()
-    detections = darknet.detect_image(
-        netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
-    profile[2] = profile[2] + (_time.time() - tempPrev)
-    tempPrev = _time.time()
-    # draw bounding boxes on the processed frame
-    markedImage = cvDrawBoxes(detections, frameToProcess)
-    profile[3] = profile[3] + (_time.time() - tempPrev)
-    # convert colorspace back to rgb from opencv native
-    return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
+# def processFrame(frameToProcess, args, netMain):
+#     print('processFrame was called')
+#     darknet_image = darknet.make_image(1920, 1080, 3)
+#     # frame = cv2.cvtColor(
+#     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
+#     if(args.resize):
+#         frame = cv2.resize(frame, (darknet.network_width(netMain), darknet.network_height(
+#             netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
+#     darknet.copy_image_from_bytes(
+#         darknet_image, frameToProcess.tobytes())
+#     # profile[1] = profile[1] + (_time.time() - tempPrev)
+#     # tempPrev = _time.time()
+#     detections = darknet.detect_image(
+#         netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+#     # profile[2] = profile[2] + (_time.time() - tempPrev)
+#     # tempPrev = _time.time()
+#     # draw bounding boxes on the processed frame
+#     markedImage = cvDrawBoxes(detections, frameToProcess)
+#     # profile[3] = profile[3] + (_time.time() - tempPrev)
+#     # convert colorspace back to rgb from opencv native
+#     out.write(markedImage)  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
 
 netMain = None
@@ -151,6 +158,28 @@ altNames = None
 
 
 def YOLO(args):
+
+    def processFrame(frameToProcess, args, netMain):
+        print('processFrame was called')
+        darknet_image = darknet.make_image(1920, 1080, 3)
+        # frame = cv2.cvtColor(
+        #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
+        if(args.resize):
+            frame = cv2.resize(frame, (darknet.network_width(netMain), darknet.network_height(
+                netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
+        darknet.copy_image_from_bytes(
+            darknet_image, frameToProcess.tobytes())
+        # profile[1] = profile[1] + (_time.time() - tempPrev)
+        # tempPrev = _time.time()
+        detections = darknet.detect_image(
+            netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+        # profile[2] = profile[2] + (_time.time() - tempPrev)
+        # tempPrev = _time.time()
+        # draw bounding boxes on the processed frame
+        markedImage = cvDrawBoxes(detections, frameToProcess)
+        # profile[3] = profile[3] + (_time.time() - tempPrev)
+        # convert colorspace back to rgb from opencv native
+        out.write(markedImage)  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
     global metaMain, netMain, altNames
     configPath = args.cfg
@@ -218,44 +247,66 @@ def YOLO(args):
         num_frames = cap.get(7)
         print('Starting the YOLO loop...')
 
+        #__________________MULTIPROCESSING___________________#
+        threadn = cv2.getNumberOfCPUs()
+        print(str(threadn))
+        pool = ThreadPool(processes=threadn)
+        pending = deque()
+
+        threaded_mode = True
+
         currFrame = 0
+        # darknet_image = darknet.make_image(1920, 1080, 3)
+        out = cv2.VideoWriter(
+            output, cv2.VideoWriter_fourcc(*'MJPG'), args.fps, (1920, 1080))
         while True:
             prev_time = _time.time()
             ret, frame_read = cap.read()
-            if currFrame == 0:
-                height, width, channels = frame_read.shape
-                # create an image we reuse for each detect
-                darknet_image = darknet.make_image(width, height, channels)
-                out = cv2.VideoWriter(
-                    output, cv2.VideoWriter_fourcc(*'MJPG'), args.fps,
-                    (width, height))
-            if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
+            # _________
+            while len(pending) > 0 and pending[0].ready():
+                res, t0 = pending.popleft().get()
+            if len(pending) < threadn:
+                ret, frame = cap.read()
+                t = clock()
+                task = pool.apply_async(
+                    processFrame, (frame_read, args, netMain))
+                pending.append(task)
+            ch = cv2.waitKey(1)
+            if ch == 27:
                 break
-            if(ret):
-                profile[0] = profile[0] + (_time.time() - prev_time)
-                tempPrev = _time.time()
-                currFrame += 1
-                processedFrame = processFrame(
-                    frame_read, args, darknet_image, netMain, tempPrev)
-                tempPrev = _time.time()
-                # add processed frame to the output file
-                out.write(processedFrame)
-                profile[4] = profile[4] + (_time.time() - tempPrev)
-                print('fps: ' + str(int(1/(_time.time()-prev_time))) +
-                      ' frames processed: ' + str(currFrame) + '/' + str(num_frames), end='\r')
-                sys.stdout.flush()
-                if(args.show):
-                    cv2.imshow('Demo', processedFrame)
-                if(currFrame == num_frames):
-                    print('Successfully finished and exported to: ' + output)
-                    break
-        cap.release()
+            print('Done')
+            # _________
+            # if currFrame == 0:
+            #height, width, channels = frame_read.shape
+            # create an image we reuse for each detect
+
+            # if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
+            #     break
+        #     if(ret):
+        #         profile[0] = profile[0] + (_time.time() - prev_time)
+        #         tempPrev = _time.time()
+        #         currFrame += 1
+        #         processedFrame = processFrame(
+        #             frame_read, args, darknet_image, netMain, tempPrev)
+        #         tempPrev = _time.time()
+        #         # add processed frame to the output file
+        #         #out.write(processedFrame)
+        #         profile[4] = profile[4] + (_time.time() - tempPrev)
+        #         print('fps: ' + str(int(1/(_time.time()-prev_time))) +
+        #               ' frames processed: ' + str(currFrame) + '/' + str(num_frames), end='\r')
+        #         sys.stdout.flush()
+        #         if(args.show):
+        #             cv2.imshow('Demo', processedFrame)
+        #         if(currFrame == num_frames):
+        #             print('Successfully finished and exported to: ' + output)
+        #             break
+        # cap.release()
         out.release()
         # index = 0
         # for time in profile:
         #     profile[index] = time/num_frames
         #     index += 1
-        print(profile)
+        # print(profile)
 
     if fileType == 1:  # input is an image
         if DEBUG_PRINT:
