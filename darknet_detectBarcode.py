@@ -148,6 +148,7 @@ def midLineBarcodeCrop(detections, img, args):
 
         resized_barcode = cv2.resize(
             barcodeCrop, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
+        print(resized_barcode.shape)
         crop_img = resized_barcode[y1:y2, x1:x2]
         print(str(x1) + ',' + str(y1) + ',' + str(x2) + ',' + str(y2))
         if(args.show):
