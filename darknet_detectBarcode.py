@@ -132,9 +132,9 @@ def midLineBarcodeCrop(detections, img, args):
             detection[2][3]
 
         x1 = max(0, round(x - w/2))
-        y1 = max(0, round(y+1))
+        y1 = max(0, round(y+5))
         x2 = max(0, round(x + w/2))
-        y2 = max(0, round(y - 1))
+        y2 = max(0, round(y - 5))
 
         fx1 = max(0, round(x - w/2))
         fy1 = max(0, round(y - h/2))
