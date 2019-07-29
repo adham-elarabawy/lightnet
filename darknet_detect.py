@@ -124,6 +124,29 @@ def cropToBoundingBox(detections, img, args, imagePath):
             validBarcodesList.append(imagePath)
 
 
+def midLineBarcodeCrop(detections, img, args, imagePath):
+    for detection in detections:
+        x, y, w, h = detection[2][0],\
+            detection[2][1],\
+            detection[2][2],\
+            detection[2][3]
+
+        x1 = max(0, round(x - w/2))
+        y1 = max(0, round(y+1))
+        x2 = max(0, round(x + w/2))
+        y2 = max(0, round(y - 1))
+        crop_img = img[y1:y2, x1:x2]
+        if(args.show):
+            cv2.imshow('demo', crop_img)
+            cv2.waitKey(3)
+        height, width, channels = img.shape
+        # frame_resized = cv2.resize(
+        #     img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
+        decodedInfo = dcdB(frame_resized)
+        if len(decodedInfo) != 0:
+            validBarcodesList.append(imagePath)
+
+
 def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     # frame = cv2.cvtColor(
     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
