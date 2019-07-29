@@ -135,10 +135,21 @@ def midLineBarcodeCrop(detections, img, args):
         y1 = max(0, round(y+1))
         x2 = max(0, round(x + w/2))
         y2 = max(0, round(y - 1))
+
+        fx1 = max(0, round(x - w/2))
+        fy1 = max(0, round(y - h/2))
+        fx2 = max(0, round(x + w/2))
+        fy2 = max(0, round(y + h/2))
+
+        barcodeCrop = img[fy1:fy2, fx1:fx2]
         crop_img = img[y1:y2, x1:x2]
         if(args.show):
+            cv2.imshow('demo', img)
+            cv2.waitKey(args.displayLength)
+            cv2.imshow('demo', barcodeCrop)
+            cv2.waitKey(args.displayLength)
             cv2.imshow('demo', crop_img)
-            cv2.waitKey(3)
+            cv2.waitKey(args.displayLength)
         height, width, channels = crop_img.shape
         # frame_resized = cv2.resize(
         #     img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
