@@ -282,15 +282,19 @@ def YOLO(args):
         print(profile)
 
     if fileType == 1:  # input is an image
+        prev_time = _time.time()
         if DEBUG_PRINT:
             print('Validated: Source input is an image.')
+        profile[0] = profile[0] + (_time.time() - prev_time)
+        tempPrev = _time.time()
         frame_read = cv2.imread(args.source)
         print('Starting the YOLO loop...')
         height, width, channels = frame_read.shape
         # create an image we reuse for each detect
         darknet_image = darknet.make_image(width, height, channels)
         processedFrame = processFrame(
-            frame_read, args, darknet_image, netMain)
+            frame_read, args, darknet_image, netMain, tempPrev)
+        profile[4] = profile[4] + (_time.time() - tempPrev)
         if(args.show):
             cv2.imshow('Demo', processedFrame)
             cv2.waitKey(args.displayLength)
