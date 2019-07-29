@@ -50,6 +50,8 @@ def arg_parse():
                         default=10000, type=int),
     parser.add_argument('--show', dest='show', action='store_true',
                         help='show the frames as they are being processed(LOWERS PERFORMANCE SIGNIFICANTLY)'),
+    parser.add_argument("--scale", dest='scale', help="what scale to interpolate the cropped barcode to for the pyzbar barcode decoding",
+                        default=2, type=int)
     parser.add_argument('--resize', dest='resize', action='store_true',
                         help='resize processed frames to dimensions of the neural network')
     parser.set_defaults(show=False)
