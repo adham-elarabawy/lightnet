@@ -102,6 +102,9 @@ def cvDrawBoxes(detections, img):
     return img
 
 
+validBarcodesList = []
+
+
 def cropToBoundingBox(detections, img, args, imagePath):
     for detection in detections:
         x, y, w, h = detection[2][0],\

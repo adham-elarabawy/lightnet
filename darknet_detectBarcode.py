@@ -295,11 +295,9 @@ def YOLO(args):
         processedFrame = processFrame(
             frame_read, args, darknet_image, netMain, tempPrev)
         profile[4] = profile[4] + (_time.time() - tempPrev)
-        if(args.show):
-            cv2.imshow('Demo', processedFrame)
-            cv2.waitKey(args.displayLength)
         #cv2.imwrite(output, processedFrame)
         print('Successfully finished and exported to: ' + output)
+        print(validBarcodesList)
 
     if filetype == 2:  # input is a directory
         if DEBUG_PRINT:
