@@ -141,9 +141,13 @@ def midLineBarcodeCrop(detections, img, args):
         fx2 = max(0, round(x + w/2))
         fy2 = max(0, round(y + h/2))
 
-        print(str(x1) + ',' + str(y1) + ',' + str(x2) + ',' + str(y2))
-        # barcodeCrop = img[fy1:fy2, fx1:fx2]
-        crop_img = img.copy()[y1:y2, x1:x2]
+        barcodeCrop = img.copy()[fy1:fy2, fx1:fx2]
+        height, width, channels = barcodeCrop.shape
+
+        resized_barcode = cv2.resize(
+            barcodeCrop, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
+        crop_img = resized_barcode.copy(
+        )[args.scale*y1:args.scale*y2, args.scale*x1:args.scale*x2]
         if(args.show):
             cv2.imshow('demo', img)
             cv2.waitKey(args.displayLength)
@@ -151,16 +155,13 @@ def midLineBarcodeCrop(detections, img, args):
             # cv2.waitKey(args.displayLength)
             cv2.imshow('demo', crop_img)
             cv2.waitKey(args.displayLength)
-        height, width, channels = crop_img.shape
-        # frame_resized = cv2.resize(
-        #     img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
         decodedInfo = dcdB(crop_img)
         if len(decodedInfo) != 0:
-            print('SUCCESS ON CROPPED SLICE')
+            print('SUCCESS ON CROPPED SLICE(INTERPOLATED THEM SLICED')
             validBarcodesList.append(decodedInfo)
-        decodedInfo = dcdB(img)
+        decodedInfo = dcdB(resized_barcode)
         if len(decodedInfo) != 0:
-            print('SUCCESS ON FULL IMAGE')
+            print('SUCCESS ON RESIZED BARCODE')
             validBarcodesList.append(decodedInfo)
 
 
