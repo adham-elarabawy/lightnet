@@ -155,13 +155,13 @@ def midLineBarcodeCrop(detections, img, args):
         # frame_resized = cv2.resize(
         #     img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
         decodedInfo = dcdB(crop_img)
-        print("0")
         if len(decodedInfo) != 0:
-            validBarcodesList.append('SUCCESS ON CROPPED SLICE')
+            print('SUCCESS ON CROPPED SLICE')
+            validBarcodesList.append(decodedInfo)
         decodedInfo = dcdB(img)
-        print("1")
         if len(decodedInfo) != 0:
-            validBarcodesList.append('SUCCESS ON FULL IMAGE')
+            print('SUCCESS ON FULL IMAGE')
+            validBarcodesList.append(decodedInfo)
 
 
 def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
