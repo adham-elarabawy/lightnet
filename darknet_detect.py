@@ -88,9 +88,7 @@ def convertBack(x, y, w, h):
     return xmin, ymin, xmax, ymax
 
 
-def cvDrawBoxes(detections, img, origImg):
-    xScale = origImg.shape[1]/img.shape[1]
-    yScale = origImg.shape[0]/img.shape[0]
+def cvDrawBoxes(detections, img):
     available_colors = len(colors)
     tempI = 0
     for detection in detections:
@@ -98,24 +96,20 @@ def cvDrawBoxes(detections, img, origImg):
             detection[2][1],\
             detection[2][2],\
             detection[2][3]
-        x *= xScale
-        y *= yScale
-        w *= xScale
-        h *= yScale
         xmin, ymin, xmax, ymax = convertBack(
             float(x), float(y), float(w), float(h))
         pt1 = (xmin, ymin)
         pt2 = (xmax, ymax)
-        cv2.rectangle(origImg, pt1, pt2, colors[tempI], 3)
-        cv2.putText(origImg,
+        cv2.rectangle(img, pt1, pt2, colors[tempI], 3)
+        cv2.putText(img,
                     detection[0].decode() +
                     ' [' + str(round(detection[1] * 100, 2)) + ']',
-                    (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_DUPLEX, 1,
-                    colors[tempI], 3)
+                    (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_DUPLEX, 0.5,
+                    colors[tempI], 1)
         tempI += 1
         if(tempI > available_colors - 1):
             tempI = 0
-    return origImg
+    return img
 
 
 validBarcodesList = []
@@ -169,9 +163,6 @@ def midLineBarcodeCrop(detections, img, args, imagePath):
 def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     # THIS IS REQUIRED BECAUSE OPENCV SWITCHES R & B CHANNELS!
     frameToProcess = cv2.cvtColor(frameToProcess, cv2.COLOR_BGR2RGB)
-    origImage = frameToProcess.copy()
-    if(args.resize):
-        frameToProcess = resizeMaintain(frameToProcess, netMain)
     darknet.copy_image_from_bytes(
         darknet_image, frameToProcess.tobytes())
     profile[1] = profile[1] + (_time.time() - tempPrev)
@@ -181,7 +172,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     profile[2] = profile[2] + (_time.time() - tempPrev)
     tempPrev = _time.time()
     # draw bounding boxes on the processed frame
-    markedImage = cvDrawBoxes(detections, frameToProcess, origImage)
+    markedImage = cvDrawBoxes(detections, frameToProcess)
     profile[3] = profile[3] + (_time.time() - tempPrev)
     # convert colorspace back to rgb from opencv native
     return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
@@ -296,9 +287,6 @@ def YOLO(args):
                 out = cv2.VideoWriter(
                     output, cv2.VideoWriter_fourcc(*'MJPG'), args.fps,
                     (width, height))
-                if(args.resize):
-                    height = darknet.network_height(netMain)
-                    width = darknet.network_width(netMain)
                 # create an image we reuse for each detect
                 darknet_image = darknet.make_image(width, height, channels)
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
