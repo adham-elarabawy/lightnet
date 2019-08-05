@@ -161,8 +161,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     # frame = cv2.cvtColor(
     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
-        frameToProcess = cv2.resize(frameToProcess, (darknet.network_width(netMain), darknet.network_height(
-            netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
+        frameToProcess = resizeMaintain(frameToProcess, netMain)
     darknet.copy_image_from_bytes(
         darknet_image, frameToProcess.tobytes())
     profile[1] = profile[1] + (_time.time() - tempPrev)
@@ -176,6 +175,31 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     profile[3] = profile[3] + (_time.time() - tempPrev)
     # convert colorspace back to rgb from opencv native
     return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
+
+
+def resizeMaintain(frameToProcess, netMain):
+    desired_size = darknet.network_width(netMain)
+    # old_size is in (height, width) format
+    old_size = frameToProcess.shape[:2]
+
+    ratio = float(desired_size)/max(old_size)
+    new_size = tuple([int(x*ratio) for x in old_size])
+
+    # new_size should be in (width, height) format
+
+    im = cv2.resize(frameToProcess, (new_size[1], new_size[0]))
+
+    delta_w = desired_size - new_size[1]
+    delta_h = desired_size - new_size[0]
+    top, bottom = delta_h//2, delta_h-(delta_h//2)
+    left, right = delta_w//2, delta_w-(delta_w//2)
+
+    color = [0, 0, 0]
+    new_im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT,
+                                value=color)
+    cv2.imshow("resized", new_im)
+    cv2.waitKey(1000)
+    return new_im
 
 
 netMain = None
