@@ -98,12 +98,12 @@ def cvDrawBoxes(detections, img):
             float(x), float(y), float(w), float(h))
         pt1 = (xmin, ymin)
         pt2 = (xmax, ymax)
-        cv2.rectangle(img, pt1, pt2, colors[tempI], 1)
+        cv2.rectangle(img, pt1, pt2, colors[tempI], 3)
         cv2.putText(img,
                     detection[0].decode() +
                     ' [' + str(round(detection[1] * 100, 2)) + ']',
-                    (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                    [0, 255, 0], 2)
+                    (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_DUPLEX, 1,
+                    colors[tempI], 3)
         tempI+=1
         if(tempI > available_colors):
             tempI = 0
