@@ -257,6 +257,9 @@ def YOLO(args):
             ret, frame_read = cap.read()
             if currFrame == 0:
                 height, width, channels = frame_read.shape
+                if(args.resize):
+                    height = darknet.network_height(netMain)
+                    width = darknet.network_width(netMain)
                 # create an image we reuse for each detect
                 darknet_image = darknet.make_image(width, height, channels)
                 out = cv2.VideoWriter(
@@ -297,6 +300,9 @@ def YOLO(args):
         print('Starting the YOLO loop...')
         height, width, channels = frame_read.shape
         # create an image we reuse for each detect
+        if(args.resize):
+            height = darknet.network_height(netMain)
+            width = darknet.network_width(netMain)
         darknet_image = darknet.make_image(width, height, channels)
         processedFrame = processFrame(
             frame_read, args, darknet_image, netMain)
@@ -324,6 +330,9 @@ def YOLO(args):
             frame_read = cv2.imread(args.source)
             height, width, channels = frame_read.shape
             # create an image we reuse for each detect
+            if(args.resize):
+                height = darknet.network_height(netMain)
+                width = darknet.network_width(netMain)
             darknet_image = darknet.make_image(width, height, channels)
             processedFrame = processFrame(
                 frame_read, args, darknet_image, netMain)
