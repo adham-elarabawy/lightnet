@@ -85,7 +85,9 @@ def convertBack(x, y, w, h):
     return xmin, ymin, xmax, ymax
 
 
-def cvDrawBoxes(detections, img):
+def cvDrawBoxes(detections, img, origImg):
+    xScale = origImg.shape[1]/img.shape[1]
+    yScale = origImg.shape[0]/img.shape[0]
     available_colors = len(colors)
     tempI = 0
     for detection in detections:
@@ -93,12 +95,16 @@ def cvDrawBoxes(detections, img):
             detection[2][1],\
             detection[2][2],\
             detection[2][3]
+        x *= xScale
+        y *= yScale
+        w *= xScale
+        h *= yScale
         xmin, ymin, xmax, ymax = convertBack(
             float(x), float(y), float(w), float(h))
         pt1 = (xmin, ymin)
         pt2 = (xmax, ymax)
-        cv2.rectangle(img, pt1, pt2, colors[tempI], 3)
-        cv2.putText(img,
+        cv2.rectangle(origImg, pt1, pt2, colors[tempI], 3)
+        cv2.putText(origImg,
                     detection[0].decode() +
                     ' [' + str(round(detection[1] * 100, 2)) + ']',
                     (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_DUPLEX, 1,
@@ -158,6 +164,7 @@ def midLineBarcodeCrop(detections, img, args, imagePath):
 
 
 def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
+    origImage = frameToProcess.copy()
     # frame = cv2.cvtColor(
     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
@@ -171,7 +178,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     profile[2] = profile[2] + (_time.time() - tempPrev)
     tempPrev = _time.time()
     # draw bounding boxes on the processed frame
-    markedImage = cvDrawBoxes(detections, frameToProcess)
+    markedImage = cvDrawBoxes(detections, frameToProcess, origImage)
     profile[3] = profile[3] + (_time.time() - tempPrev)
     # convert colorspace back to rgb from opencv native
     return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
@@ -182,6 +189,7 @@ def resizeMaintain(frameToProcess, netMain):
     frame_resized = cv2.resize(frame_rgb, (darknet.network_width(
         netMain), darknet.network_height(netMain)), interpolation=cv2.INTER_LINEAR)
     return frame_resized
+    # RESIZE WITH PADDING:
     # desired_size = 1920  # darknet.network_width(netMain)
     # # old_size is in (height, width) format
     # old_size = frameToProcess.shape[:2]
