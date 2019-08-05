@@ -89,7 +89,6 @@ def cvDrawBoxes(detections, img):
     available_colors = len(colors)
     tempI = 0
     for detection in detections:
-        print(tempI)
         x, y, w, h = detection[2][0],\
             detection[2][1],\
             detection[2][2],\
@@ -279,7 +278,7 @@ def YOLO(args):
                 out.write(processedFrame)
                 profile[4] = profile[4] + (_time.time() - tempPrev)
                 print('fps: ' + str(int(1/(_time.time()-prev_time))) +
-                      ' frames processed: ' + str(currFrame) + '/' + str(num_frames))
+                      ' frames processed: ' + str(currFrame) + '/' + str(num_frames), end='\r')
                 sys.stdout.flush()
                 if(args.show):
                     cv2.imshow('Demo', processedFrame)
