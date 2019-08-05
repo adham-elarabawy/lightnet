@@ -46,7 +46,7 @@ def arg_parse():
     parser.add_argument('--meta', dest='data', help='path to the .data file detailing the model metadata',
                         required=True, type=str),
     parser.add_argument('--outfps', dest='fps', help='desired framerate of the output video(with the bounding boxes on it)[LIMITED BY PROCESSING SPEED]',
-                        default=30, type=int),
+                        default=60, type=int),
     parser.add_argument('--len', dest='displayLength',
                         help='(FOR IMAGE DETECTION NOT VIDEO), how long to display the processed frame before ending the program',
                         default=10000, type=int),
