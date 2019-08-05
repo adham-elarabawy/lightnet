@@ -162,7 +162,7 @@ def midLineBarcodeCrop(detections, img, args, imagePath):
 
 def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     # THIS IS REQUIRED BECAUSE OPENCV SWITCHES R & B CHANNELS!
-    frameToProcess = cv2.cvtColor(frameToProcess, cv2.COLOR_BGR2RGB)
+    #ßframeToProcess = cv2.cvtColor(frameToProcess, cv2.COLOR_BGR2RGB)
     darknet.copy_image_from_bytes(
         darknet_image, frameToProcess.tobytes())
     profile[1] = profile[1] + (_time.time() - tempPrev)
