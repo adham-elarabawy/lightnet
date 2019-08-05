@@ -19,6 +19,8 @@ validBarcodesList = []
 profile = [0, 0, 0, 0, 0]
 tempPrev = _time.time()
 
+colors = [(255,0,0), (0,255,0), (0,0,255), (255,255,255)]
+
 
 def arg_parse():
     """
@@ -36,7 +38,7 @@ def arg_parse():
     parser.add_argument('--confidence', dest='confidence',
                         help='Object Confidence to filter predictions', default=0.25),
     parser.add_argument('--nms_thresh', dest='nms_thresh',
-                        help='NMS Threshhold', default=0.45),
+                        help='NMS Threshhold', default=0.25),
     parser.add_argument('--cfg', dest='cfg', help='Config file',
                         required=True, type=str),
     parser.add_argument('--weights', dest='weights', help='weightsfile',
@@ -84,6 +86,9 @@ def convertBack(x, y, w, h):
 
 
 def cvDrawBoxes(detections, img):
+    print('num of detected objects: ' + str(len(detections)))
+    available_colors = len(colors)
+    tempI = 0
     for detection in detections:
         x, y, w, h = detection[2][0],\
             detection[2][1],\
@@ -93,12 +98,15 @@ def cvDrawBoxes(detections, img):
             float(x), float(y), float(w), float(h))
         pt1 = (xmin, ymin)
         pt2 = (xmax, ymax)
-        cv2.rectangle(img, pt1, pt2, (0, 255, 0), 1)
+        cv2.rectangle(img, pt1, pt2, colors[tempI], 1)
         cv2.putText(img,
                     detection[0].decode() +
                     ' [' + str(round(detection[1] * 100, 2)) + ']',
                     (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                     [0, 255, 0], 2)
+        tempI+=1
+        if(tempI > available_colors):
+            tempI = 0
     return img
 
 
