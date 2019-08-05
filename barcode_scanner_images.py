@@ -23,10 +23,10 @@ def arg_parse():
     parser.add_argument("--src", dest='source', help="path of the video that the model is being tested on(include the desired video name and type)",
                         default="input.avi", type=str),
     parser.add_argument("--bs", dest="bs", help="Batch size", default=1)
-    parser.add_argument("--confidence", dest="confidence",
-                        help="Object Confidence to filter predictions", default=0.25)
-    parser.add_argument("--nms_thresh", dest="nms_thresh",
-                        help="NMS Threshhold", default=0.45),
+    # parser.add_argument("--confidence", dest="confidence",
+    #                     help="Object Confidence to filter predictions", default=0.25)
+    # parser.add_argument("--nms_thresh", dest="nms_thresh",
+    #                     help="NMS Threshhold", default=0.45),
     parser.add_argument("--cfg", dest='cfg', help="Config file",
                         default="cfg/yolov3.cfg", type=str),
     parser.add_argument("--weights", dest='weights', help="weightsfile",
@@ -165,7 +165,7 @@ def YOLO(args):
             darknet.copy_image_from_bytes(darknet_image, frame_read.tobytes())
 
             detections = darknet.detect_image(
-                netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+                netMain, metaMain, darknet_image, debug=False)
             cropToBoundingBox(detections, frame_read, args, imagePath)
 
     print("Successfully finished reading barcodes!")

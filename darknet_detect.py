@@ -19,7 +19,7 @@ validBarcodesList = []
 profile = [0, 0, 0, 0, 0]
 tempPrev = _time.time()
 
-colors = [(255,0,0), (0,255,0), (0,0,255), (255,255,255)]
+colors = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 255)]
 
 
 def arg_parse():
@@ -35,10 +35,10 @@ def arg_parse():
     parser.add_argument('--src', dest='source', help='path of the file/directory(of images) that the model is being tested on(include the filename and filetype) [SET TO 0 FOR WEBCAM USE(not tested)] \n *If passing in directory, ALL files in directory MUST BE valid images',
                         required=True, type=str),
     parser.add_argument('--bs', dest='bs', help='Batch size', default=1),
-    parser.add_argument('--confidence', dest='confidence',
-                        help='Object Confidence to filter predictions', default=0.25),
-    parser.add_argument('--nms_thresh', dest='nms_thresh',
-                        help='NMS Threshhold', default=0.45),
+    # parser.add_argument('--confidence', dest='confidence',
+    #                     help='Object Confidence to filter predictions', default=0.25),
+    # parser.add_argument('--nms_thresh', dest='nms_thresh',
+    #                     help='NMS Threshhold', default=0.45),
     parser.add_argument('--cfg', dest='cfg', help='Config file',
                         required=True, type=str),
     parser.add_argument('--weights', dest='weights', help='weightsfile',
@@ -86,7 +86,6 @@ def convertBack(x, y, w, h):
 
 
 def cvDrawBoxes(detections, img):
-    print('num of detected objects: ' + str(len(detections)), end='\r')
     available_colors = len(colors)
     tempI = 0
     for detection in detections:
@@ -104,7 +103,7 @@ def cvDrawBoxes(detections, img):
                     ' [' + str(round(detection[1] * 100, 2)) + ']',
                     (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_DUPLEX, 1,
                     colors[tempI], 3)
-        tempI+=1
+        tempI += 1
         if(tempI > available_colors):
             tempI = 0
     return img
