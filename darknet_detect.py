@@ -178,7 +178,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
 
 
 def resizeMaintain(frameToProcess, netMain):
-    desired_size = darknet.network_width(netMain)
+    desired_size = 1920  # darknet.network_width(netMain)
     # old_size is in (height, width) format
     old_size = frameToProcess.shape[:2]
 
