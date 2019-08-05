@@ -178,26 +178,30 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
 
 
 def resizeMaintain(frameToProcess, netMain):
-    desired_size = 1920  # darknet.network_width(netMain)
-    # old_size is in (height, width) format
-    old_size = frameToProcess.shape[:2]
+    frame_rgb = cv2.cvtColor(frameToProcess, cv2.COLOR_BGR2RGB)
+    frame_resized = cv2.resize(frame_rgb, (darknet.network_width(
+        netMain), darknet.network_height(netMain)), interpolation=cv2.INTER_LINEAR)
+    return frame_resized
+    # desired_size = 1920  # darknet.network_width(netMain)
+    # # old_size is in (height, width) format
+    # old_size = frameToProcess.shape[:2]
 
-    ratio = float(desired_size)/max(old_size)
-    new_size = tuple([int(x*ratio) for x in old_size])
+    # ratio = float(desired_size)/max(old_size)
+    # new_size = tuple([int(x*ratio) for x in old_size])
 
-    # new_size should be in (width, height) format
+    # # new_size should be in (width, height) format
 
-    im = cv2.resize(frameToProcess, (new_size[1], new_size[0]))
+    # im = cv2.resize(frameToProcess, (new_size[1], new_size[0]))
 
-    delta_w = desired_size - new_size[1]
-    delta_h = desired_size - new_size[0]
-    top, bottom = delta_h//2, delta_h-(delta_h//2)
-    left, right = delta_w//2, delta_w-(delta_w//2)
+    # delta_w = desired_size - new_size[1]
+    # delta_h = desired_size - new_size[0]
+    # top, bottom = delta_h//2, delta_h-(delta_h//2)
+    # left, right = delta_w//2, delta_w-(delta_w//2)
 
-    color = [0, 0, 0]
-    new_im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT,
-                                value=color)
-    return new_im
+    # color = [0, 0, 0]
+    # new_im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT,
+    #                             value=color)
+    # return new_im
 
 
 netMain = None
@@ -279,9 +283,10 @@ def YOLO(args):
             ret, frame_read = cap.read()
             if currFrame == 0:
                 height, width, channels = frame_read.shape
-                if(args.resize):
-                    height = width
                 # create an image we reuse for each detect
+                if(args.resize):
+                    height = darknet.network_height(netMain)
+                    width = darknet.network_width(netMain)
                 darknet_image = darknet.make_image(width, height, channels)
                 out = cv2.VideoWriter(
                     output, cv2.VideoWriter_fourcc(*'MJPG'), args.fps,
