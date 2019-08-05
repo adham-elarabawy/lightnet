@@ -190,7 +190,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
 def resizeMaintain(frameToProcess, netMain):
     # frame_resized = cv2.resize(frameToProcess, (darknet.network_width(
     #     netMain), darknet.network_height(netMain)), interpolation=cv2.INTER_LINEAR)
-    return frame_resized
+    return frameToProcess
     # RESIZE WITH PADDING:
     # desired_size = 1920  # darknet.network_width(netMain)
     # # old_size is in (height, width) format
