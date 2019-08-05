@@ -105,7 +105,7 @@ def cvDrawBoxes(detections, img):
                     (pt1[0], pt1[1] - 5), cv2.FONT_HERSHEY_DUPLEX, 1,
                     colors[tempI], 3)
         tempI += 1
-        if(tempI > available_colors):
+        if(tempI > available_colors - 1):
             tempI = 0
     return img
 
