@@ -54,8 +54,11 @@ def arg_parse():
                         help='show the frames as they are being processed(LOWERS PERFORMANCE SIGNIFICANTLY)'),
     parser.add_argument('--resize', dest='resize', action='store_true',
                         help='resize processed frames to dimensions of the neural network')
+    # parser.add_argument('--nice', dest='nice', action='store_true',
+    #                     help='(NOT RECOMMENDED FOR PERFORMANCE REASONS)resize back to original resolution and colorspace after processing')
     parser.set_defaults(show=False)
     parser.set_defaults(resize=False)
+
     return parser.parse_args()
 
 
@@ -185,8 +188,8 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
 
 
 def resizeMaintain(frameToProcess, netMain):
-    frame_resized = cv2.resize(frameToProcess, (darknet.network_width(
-        netMain), darknet.network_height(netMain)), interpolation=cv2.INTER_LINEAR)
+    # frame_resized = cv2.resize(frameToProcess, (darknet.network_width(
+    #     netMain), darknet.network_height(netMain)), interpolation=cv2.INTER_LINEAR)
     return frame_resized
     # RESIZE WITH PADDING:
     # desired_size = 1920  # darknet.network_width(netMain)
