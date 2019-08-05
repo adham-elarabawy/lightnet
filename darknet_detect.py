@@ -38,7 +38,7 @@ def arg_parse():
     parser.add_argument('--confidence', dest='confidence',
                         help='Object Confidence to filter predictions', default=0.25),
     parser.add_argument('--nms_thresh', dest='nms_thresh',
-                        help='NMS Threshhold', default=0.25),
+                        help='NMS Threshhold', default=0.45),
     parser.add_argument('--cfg', dest='cfg', help='Config file',
                         required=True, type=str),
     parser.add_argument('--weights', dest='weights', help='weightsfile',
@@ -169,7 +169,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     profile[1] = profile[1] + (_time.time() - tempPrev)
     tempPrev = _time.time()
     detections = darknet.detect_image(
-        netMain, metaMain, darknet_image, thresh=args.confidence, nms=args.nms_thresh, debug=False)
+        netMain, metaMain, darknet_image, debug=False)
     profile[2] = profile[2] + (_time.time() - tempPrev)
     tempPrev = _time.time()
     # draw bounding boxes on the processed frame
