@@ -112,7 +112,7 @@ def cvDrawBoxes(detections, img, origImg):
         tempI += 1
         if(tempI > available_colors - 1):
             tempI = 0
-    return img
+    return origImg
 
 
 validBarcodesList = []
@@ -164,7 +164,7 @@ def midLineBarcodeCrop(detections, img, args, imagePath):
 
 
 def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
-    origImage = frameToProcess
+    origImage = frameToProcess.copy()
     # frame = cv2.cvtColor(
     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
