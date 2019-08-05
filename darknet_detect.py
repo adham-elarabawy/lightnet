@@ -197,7 +197,6 @@ def resizeMaintain(frameToProcess, netMain):
     color = [0, 0, 0]
     new_im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT,
                                 value=color)
-    cv2.imwrite('/mnt/nas01/workspace_share/cnn/temp/test.png', new_im)
     return new_im
 
 
