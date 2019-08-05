@@ -164,7 +164,7 @@ def midLineBarcodeCrop(detections, img, args, imagePath):
 
 
 def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
-    origImage = frameToProcess.copy()
+    origImage = frameToProcess
     # frame = cv2.cvtColor(
     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
