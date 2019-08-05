@@ -280,8 +280,7 @@ def YOLO(args):
             if currFrame == 0:
                 height, width, channels = frame_read.shape
                 if(args.resize):
-                    height = darknet.network_height(netMain)
-                    width = darknet.network_width(netMain)
+                    height = width
                 # create an image we reuse for each detect
                 darknet_image = darknet.make_image(width, height, channels)
                 out = cv2.VideoWriter(
