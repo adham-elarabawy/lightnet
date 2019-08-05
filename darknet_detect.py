@@ -161,7 +161,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     # frame = cv2.cvtColor(
     #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
-        frame = cv2.resize(frame, (darknet.network_width(netMain), darknet.network_height(
+        frameToProcess = cv2.resize(frameToProcess, (darknet.network_width(netMain), darknet.network_height(
             netMain)), interpolation=cv2.INTER_LINEAR)  # resize the image to neural network dimensions using interpolation
     darknet.copy_image_from_bytes(
         darknet_image, frameToProcess.tobytes())
