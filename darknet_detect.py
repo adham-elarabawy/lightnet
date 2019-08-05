@@ -164,9 +164,9 @@ def midLineBarcodeCrop(detections, img, args, imagePath):
 
 
 def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
+    # THIS IS REQUIRED BECAUSE OPENCV SWITCHES R & B CHANNELS!
+    frameToProcess = cv2.cvtColor(frameToProcess, cv2.COLOR_BGR2RGB)
     origImage = frameToProcess.copy()
-    # frame = cv2.cvtColor(
-    #     frameToProcess, cv2.COLOR_BGR2RGB)  # convert to rgb
     if(args.resize):
         frameToProcess = resizeMaintain(frameToProcess, netMain)
     darknet.copy_image_from_bytes(
@@ -185,8 +185,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
 
 
 def resizeMaintain(frameToProcess, netMain):
-    frame_rgb = cv2.cvtColor(frameToProcess, cv2.COLOR_BGR2RGB)
-    frame_resized = cv2.resize(frame_rgb, (darknet.network_width(
+    frame_resized = cv2.resize(frameToProcess, (darknet.network_width(
         netMain), darknet.network_height(netMain)), interpolation=cv2.INTER_LINEAR)
     return frame_resized
     # RESIZE WITH PADDING:
@@ -291,14 +290,14 @@ def YOLO(args):
             ret, frame_read = cap.read()
             if currFrame == 0:
                 height, width, channels = frame_read.shape
-                # create an image we reuse for each detect
-                if(args.resize):
-                    height = darknet.network_height(netMain)
-                    width = darknet.network_width(netMain)
-                darknet_image = darknet.make_image(width, height, channels)
                 out = cv2.VideoWriter(
                     output, cv2.VideoWriter_fourcc(*'MJPG'), args.fps,
                     (width, height))
+                if(args.resize):
+                    height = darknet.network_height(netMain)
+                    width = darknet.network_width(netMain)
+                # create an image we reuse for each detect
+                darknet_image = darknet.make_image(width, height, channels)
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             if(ret):
