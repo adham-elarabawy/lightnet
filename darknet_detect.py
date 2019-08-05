@@ -86,7 +86,7 @@ def convertBack(x, y, w, h):
 
 
 def cvDrawBoxes(detections, img):
-    print('num of detected objects: ' + str(len(detections)))
+    print('num of detected objects: ' + str(len(detections)), end='\r')
     available_colors = len(colors)
     tempI = 0
     for detection in detections:
