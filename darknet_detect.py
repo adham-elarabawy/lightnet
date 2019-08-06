@@ -175,7 +175,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     markedImage = cvDrawBoxes(detections, frameToProcess)
     profile[3] = profile[3] + (_time.time() - tempPrev)
     # convert colorspace back to rgb from opencv native
-    return markedImage  # cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
+    return cv2.cvtColor(markedImage, cv2.COLOR_BGR2RGB)
 
 
 def resizeMaintain(frameToProcess, netMain):
