@@ -280,6 +280,11 @@ def YOLO(args):
         cap.set(3, 1920)
         cap.set(4, 1080)
         num_frames = cap.get(7)
+
+        # Check if the webcam is opened correctly
+        if not cap.isOpened():
+            raise IOError("Cannot open webcam")
+
         print('Starting the YOLO loop...')
 
         currFrame = 0
