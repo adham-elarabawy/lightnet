@@ -54,8 +54,6 @@ def arg_parse():
                         help='show the frames as they are being processed(LOWERS PERFORMANCE SIGNIFICANTLY)'),
     parser.add_argument('--resize', dest='resize', action='store_true',
                         help='resize processed frames to dimensions of the neural network')
-    parser.add_argument('--cam', dest='cam', action='store_true',
-                        help='enable webcam input')
     parser.set_defaults(show=False)
     parser.set_defaults(resize=False)
     parser.set_defaults(cam=False)
@@ -257,7 +255,7 @@ def YOLO(args):
         except Exception:
             pass
     fileType = 0
-    if not args.cam:
+    if not args.source == "0":
         fileType = checkType(args.source)
         if not fileType == 2:
             # file type of the input image
@@ -275,9 +273,8 @@ def YOLO(args):
     if fileType == 0:  # input is a video
         if DEBUG_PRINT:
             print('Validated: Source input is a video.')
-        # source = args.source
-        # if args.cam:
-        #     source = 0
+        # if args.source == "0":
+        #     args.source = 0
         cap = cv2.VideoCapture(args.source)  # set to 0 to use webcam input
         cap.set(3, 1920)
         cap.set(4, 1080)
