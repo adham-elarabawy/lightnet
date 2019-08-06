@@ -383,11 +383,12 @@ def YOLO(args):
         #     raise IOError("Cannot open webcam")
 
         print('Starting the YOLO loop...')
-        ret, frame_read = cap.read()
         currFrame = 0
         while True:
             prev_time = _time.time()
             ret, frame_read = cap.read()
+            cv2.imshow('', frame_read)
+            cv2.waitKey(10000)
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             # if(ret):
