@@ -273,8 +273,8 @@ def YOLO(args):
     if fileType == 0:  # input is a video
         if DEBUG_PRINT:
             print('Validated: Source input is a video.')
-        # if args.source == "0":
-        #     args.source = 0
+        if args.source == "0":
+            args.source = 0
         cap = cv2.VideoCapture(args.source)  # set to 0 to use webcam input
         cap.set(3, 1920)
         cap.set(4, 1080)
