@@ -276,7 +276,7 @@ def YOLO(args):
         source = args.source
         if args.cam:
             source = 0
-        cap = cv2.VideoCapture(source)  # set to 0 to use webcam input
+        cap = cv2.VideoCapture(0)  # set to 0 to use webcam input
         cap.set(3, 1920)
         cap.set(4, 1080)
         num_frames = cap.get(7)
