@@ -375,7 +375,7 @@ def YOLO(args):
     if fileType == 3:  # input is camera stream
         if DEBUG_PRINT:
             print('Validated: Source input is a camera stream.')
-        cap = cv2.VideoCapture(0).open(0)
+        cap = cv2.VideoCapture(0)
 
         # Check if the webcam is opened correctly
         if not cap.isOpened():
@@ -390,6 +390,7 @@ def YOLO(args):
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             if(ret):
+                print('Entered YOLO Loop with valid frame.')
                 if currFrame == 0:
                     height, width, channels = frame_read.shape
                     out = cv2.VideoWriter(
