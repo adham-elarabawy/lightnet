@@ -378,8 +378,8 @@ def YOLO(args):
         cap = cv2.VideoCapture('/dev/video0').open('/dev/video0')
 
         # Check if the webcam is opened correctly
-        if not cap.isOpened():
-            raise IOError("Cannot open webcam")
+        # if not cap.isOpened():
+        #     raise IOError("Cannot open webcam")
 
         print('Starting the YOLO loop...')
 
