@@ -254,7 +254,7 @@ def YOLO(args):
                     pass
         except Exception:
             pass
-    fileType = 0
+    fileType = 3
     if not args.source == "0":
         fileType = checkType(args.source)
         if not fileType == 2:
@@ -273,10 +273,7 @@ def YOLO(args):
     if fileType == 0:  # input is a video
         if DEBUG_PRINT:
             print('Validated: Source input is a video.')
-        if args.source == "0":
-            cap = cv2.VideoCapture(0).open(0)
-        else:
-            cap = cv2.VideoCapture(args.source)
+        cap = cv2.VideoCapture(args.source)
         cap.set(3, 1920)
         cap.set(4, 1080)
         num_frames = cap.get(7)
@@ -294,8 +291,6 @@ def YOLO(args):
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             if(ret):
-                if DEBUG_PRINT:
-                    print('Received Valid Frame: ' + str(currFrame))
                 if currFrame == 0:
                     height, width, channels = frame_read.shape
                     out = cv2.VideoWriter(
@@ -377,6 +372,48 @@ def YOLO(args):
             cv2.imwrite(output, processedFrame)
             print('Successfully finished frame and exported to: ' +
                   output + '\nMoving on to next frame...', end='\r')
+    if fileType == 3:  # input is camera stream
+        if DEBUG_PRINT:
+            print('Validated: Source input is a camera stream.')
+        cap = cv2.VideoCapture(0).open(0)
+
+        # Check if the webcam is opened correctly
+        if not cap.isOpened():
+            raise IOError("Cannot open webcam")
+
+        print('Starting the YOLO loop...')
+
+        currFrame = 0
+        while True:
+            prev_time = _time.time()
+            ret, frame_read = cap.read()
+            if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
+                break
+            if(ret):
+                if currFrame == 0:
+                    height, width, channels = frame_read.shape
+                    out = cv2.VideoWriter(
+                        output, cv2.VideoWriter_fourcc(*'MJPG'), args.fps,
+                        (width, height))
+                    # create an image we reuse for each detect
+                    darknet_image = darknet.make_image(width, height, channels)
+                profile[0] = profile[0] + (_time.time() - prev_time)
+                tempPrev = _time.time()
+                currFrame += 1
+                processedFrame = processFrame(
+                    frame_read, args, darknet_image, netMain, tempPrev)
+                tempPrev = _time.time()
+                # add processed frame to the output file
+                out.write(processedFrame)
+                profile[4] = profile[4] + (_time.time() - tempPrev)
+                print('avg inference fps: ' + str(int(currFrame/(profile[2]))) + ', actual fps: ' + str(int(1/(_time.time()-prev_time))) +
+                      ', frames processed: ' + str(currFrame), end='\r')
+                sys.stdout.flush()
+                if(args.show):
+                    cv2.imshow('Demo', processedFrame)
+        cap.release()
+        out.release()
+        print(profile)
 
 
 if __name__ == '__main__':
