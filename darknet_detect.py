@@ -285,16 +285,16 @@ def YOLO(args):
         while True:
             prev_time = _time.time()
             ret, frame_read = cap.read()
-            if currFrame == 0:
-                height, width, channels = frame_read.shape
-                out = cv2.VideoWriter(
-                    output, cv2.VideoWriter_fourcc(*'MJPG'), args.fps,
-                    (width, height))
-                # create an image we reuse for each detect
-                darknet_image = darknet.make_image(width, height, channels)
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             if(ret):
+                if currFrame == 0:
+                    height, width, channels = frame_read.shape
+                    out = cv2.VideoWriter(
+                        output, cv2.VideoWriter_fourcc(*'MJPG'), args.fps,
+                        (width, height))
+                    # create an image we reuse for each detect
+                    darknet_image = darknet.make_image(width, height, channels)
                 profile[0] = profile[0] + (_time.time() - prev_time)
                 tempPrev = _time.time()
                 currFrame += 1
