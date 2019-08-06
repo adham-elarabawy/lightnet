@@ -256,15 +256,17 @@ def YOLO(args):
                     pass
         except Exception:
             pass
-
-    fileType = checkType(args.source)
-    if not fileType == 2:
-        inputType = filetype.guess(args.source)  # file type of the input image
-        output = args.output
-        if output == '___':
-            toStrip = len(str(inputType.extension)) + 1
-            output = args.source[:-toStrip] + \
-                '_proc.' + str(inputType.extension)
+    fileType = 0
+    if not args.cam:
+        fileType = checkType(args.source)
+        if not fileType == 2:
+            # file type of the input image
+            inputType = filetype.guess(args.source)
+            output = args.output
+            if output == '___':
+                toStrip = len(str(inputType.extension)) + 1
+                output = args.source[:-toStrip] + \
+                    '_proc.' + str(inputType.extension)
 
     if fileType == -1:
         print('Input is not a supported image or video format. Try running the python script with: --help for more information')
@@ -273,10 +275,10 @@ def YOLO(args):
     if fileType == 0:  # input is a video
         if DEBUG_PRINT:
             print('Validated: Source input is a video.')
-        source = args.source
-        if args.cam:
-            source = 0
-        cap = cv2.VideoCapture(0)  # set to 0 to use webcam input
+        # source = args.source
+        # if args.cam:
+        #     source = 0
+        cap = cv2.VideoCapture(args.source)  # set to 0 to use webcam input
         cap.set(3, 1920)
         cap.set(4, 1080)
         num_frames = cap.get(7)
