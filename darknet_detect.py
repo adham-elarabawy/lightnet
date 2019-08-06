@@ -375,7 +375,7 @@ def YOLO(args):
     if fileType == 3:  # input is camera stream
         if DEBUG_PRINT:
             print('Validated: Source input is a camera stream.')
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(-1)
 
         # Check if the webcam is opened correctly
         if not cap.isOpened():
