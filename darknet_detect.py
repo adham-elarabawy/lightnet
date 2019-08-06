@@ -289,7 +289,7 @@ def YOLO(args):
                 break
             if(ret):
                 if DEBUG_PRINT:
-                    print('Received Valid Frame: ' + currFrame)
+                    print('Received Valid Frame: ' + str(currFrame))
                 if currFrame == 0:
                     height, width, channels = frame_read.shape
                     out = cv2.VideoWriter(
