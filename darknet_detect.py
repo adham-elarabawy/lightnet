@@ -274,7 +274,7 @@ def YOLO(args):
         if DEBUG_PRINT:
             print('Validated: Source input is a video.')
         if args.source == "0":
-            args.source = 1
+            args.source = 0
         cap = cv2.VideoCapture(args.source)  # set to 0 to use webcam input
         cap.set(3, 1920)
         cap.set(4, 1080)
@@ -285,6 +285,7 @@ def YOLO(args):
         while True:
             prev_time = _time.time()
             ret, frame_read = cap.read()
+            cv2.imshow('DEBUG', frame_read)
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             if(ret):
