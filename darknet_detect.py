@@ -385,6 +385,7 @@ def YOLO(args):
 
         currFrame = 0
         while True:
+            print('Entered Loop.')
             prev_time = _time.time()
             ret, frame_read = cap.read()
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
