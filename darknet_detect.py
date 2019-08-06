@@ -274,7 +274,7 @@ def YOLO(args):
         if DEBUG_PRINT:
             print('Validated: Source input is a video.')
         if args.source == "0":
-            cap = cv2.VideoCapture(1)
+            cap = cv2.VideoCapture(2)
         else:
             cap = cv2.VideoCapture(args.source)
         cap.set(3, 1920)
