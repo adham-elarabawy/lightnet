@@ -301,8 +301,8 @@ def YOLO(args):
                 # add processed frame to the output file
                 out.write(processedFrame)
                 profile[4] = profile[4] + (_time.time() - tempPrev)
-                print('fps: ' + str(int(1/(_time.time()-prev_time))) +
-                      ' frames processed: ' + str(currFrame) + '/' + str(num_frames), end='\r')
+                print('avg inference fps: ' + str(int(currFrame/(profile[2] - profile[1]))) + ', actual fps: ' + str(int(1/(_time.time()-prev_time))) +
+                      ', frames processed: ' + str(currFrame) + '/' + str(num_frames), end='\r')
                 sys.stdout.flush()
                 if(args.show):
                     cv2.imshow('Demo', processedFrame)
