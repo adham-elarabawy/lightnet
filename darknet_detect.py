@@ -288,6 +288,8 @@ def YOLO(args):
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             if(ret):
+                if DEBUG_PRINT:
+                    print('Received Valid Frame: ' + currFrame)
                 if currFrame == 0:
                     height, width, channels = frame_read.shape
                     out = cv2.VideoWriter(
@@ -374,3 +376,4 @@ def YOLO(args):
 if __name__ == '__main__':
     args = arg_parse()
     YOLO(args)
+    cv2.destroyAllWindows()
