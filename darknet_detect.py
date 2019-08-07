@@ -408,8 +408,8 @@ def YOLO(args):
                 # add processed frame to the output file
                 out.write(processedFrame)
                 profile[4] = profile[4] + (_time.time() - tempPrev)
-                # cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
-                # cap.set(cv2.CAP_PROP_EXPOSURE, 0.1)
+                cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
+                cap.set(cv2.CAP_PROP_EXPOSURE, 0.31)
                 camera_exposure = cap.get(cv2.CAP_PROP_EXPOSURE)
                 print('avg inference fps: ' + str(int(currFrame/(profile[2]))) + ', actual fps: ' + str(int(1/(_time.time()-prev_time))) +
                       ', frames processed: ' + str(currFrame) + ', camera exposure: ' + str(camera_exposure), end='\r')
