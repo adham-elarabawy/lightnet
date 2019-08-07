@@ -54,10 +54,14 @@ def arg_parse():
                         help='show the frames as they are being processed(LOWERS PERFORMANCE SIGNIFICANTLY)'),
     parser.add_argument('--resize', dest='resize', action='store_true',
                         help='resize processed frames to dimensions of the neural network')
+    parser.add_argument('--exposure', dest='exposure', help='desired camera exposure(only for live webcam detection). --autoexpose WILL OVERRIDE THIS SETTING',
+                        default=0.02, type=int),
+    parser.add_argument('--autoexpose', dest='autoexpose', action='store_true',
+                        help='enable autoexposure on the camera. WILL OVERRIDE --exposure')
 
     parser.set_defaults(show=False)
     parser.set_defaults(resize=False)
-    parser.set_defaults(cam=False)
+    parser.set_defaults(resize=False)
 
     return parser.parse_args()
 
@@ -330,9 +334,6 @@ def YOLO(args):
         print('Starting the YOLO loop...')
         height, width, channels = frame_read.shape
         # create an image we reuse for each detect
-        if(args.resize):
-            height = darknet.network_height(netMain)
-            width = darknet.network_width(netMain)
         darknet_image = darknet.make_image(width, height, channels)
         processedFrame = processFrame(
             frame_read, args, darknet_image, netMain)
@@ -360,9 +361,6 @@ def YOLO(args):
             frame_read = cv2.imread(args.source)
             height, width, channels = frame_read.shape
             # create an image we reuse for each detect
-            if(args.resize):
-                height = darknet.network_height(netMain)
-                width = darknet.network_width(netMain)
             darknet_image = darknet.make_image(width, height, channels)
             processedFrame = processFrame(
                 frame_read, args, darknet_image, netMain)
@@ -377,8 +375,13 @@ def YOLO(args):
             print('Validated: Source input is a camera stream.')
         cap = cv2.VideoCapture(0)
         opened = cap.open(0)
-        print(str(opened))
-
+        if DEBUG_PRINT:
+            print('Camera connected: ' + str(opened))
+        if not args.autoexpose:
+            cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
+            cap.set(cv2.CAP_PROP_EXPOSURE, args.exposure)
+        else:
+            cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.75)
         # Check if the webcam is opened correctly
         if not cap.isOpened():
             raise IOError("Cannot open webcam")
@@ -409,11 +412,8 @@ def YOLO(args):
                 out.write(processedFrame)
                 profile[4] = profile[4] + (_time.time() - tempPrev)
                 # setting manual exposure
-                cap.set(cv2.CAP_PROP_AUTO_EXPOSURE, 0.25)
-                cap.set(cv2.CAP_PROP_EXPOSURE, 0.02)
-                camera_exposure = cap.get(cv2.CAP_PROP_EXPOSURE)
                 print('avg inference fps: ' + str(int(currFrame/(profile[2]))) + ', actual fps: ' + str(int(1/(_time.time()-prev_time))) +
-                      ', frames processed: ' + str(currFrame) + ', camera exposure: ' + str(camera_exposure), end='\r')
+                      ', frames processed: ' + str(currFrame), end='\r')
                 sys.stdout.flush()
                 if(args.show):
                     cv2.namedWindow('Demo', cv2.WINDOW_NORMAL)
