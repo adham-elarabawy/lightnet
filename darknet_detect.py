@@ -54,6 +54,7 @@ def arg_parse():
                         help='show the frames as they are being processed(LOWERS PERFORMANCE SIGNIFICANTLY)'),
     parser.add_argument('--resize', dest='resize', action='store_true',
                         help='resize processed frames to dimensions of the neural network')
+
     parser.set_defaults(show=False)
     parser.set_defaults(resize=False)
     parser.set_defaults(cam=False)
@@ -152,8 +153,6 @@ def midLineBarcodeCrop(detections, img, args, imagePath):
             cv2.imshow('demo', crop_img)
             cv2.waitKey(3)
         height, width, channels = img.shape
-        # frame_resized = cv2.resize(
-        #     img, (width*args.scale, height*args.scale), interpolation=cv2.INTER_LANCZOS4)
         decodedInfo = dcdB(frame_resized)
         if len(decodedInfo) != 0:
             validBarcodesList.append(imagePath)
@@ -178,9 +177,9 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
 
 
 def resizeMaintain(frameToProcess, netMain):
+    return frameToProcess
     # frame_resized = cv2.resize(frameToProcess, (darknet.network_width(
     #     netMain), darknet.network_height(netMain)), interpolation=cv2.INTER_LINEAR)
-    return frameToProcess
     # RESIZE WITH PADDING:
     # desired_size = 1920  # darknet.network_width(netMain)
     # # old_size is in (height, width) format
@@ -409,8 +408,9 @@ def YOLO(args):
                 # add processed frame to the output file
                 out.write(processedFrame)
                 profile[4] = profile[4] + (_time.time() - tempPrev)
+                camera_exposure = cap.get(cv2.CV_CAP_PROP_EXPOSURE)
                 print('avg inference fps: ' + str(int(currFrame/(profile[2]))) + ', actual fps: ' + str(int(1/(_time.time()-prev_time))) +
-                      ', frames processed: ' + str(currFrame), end='\r')
+                      ', frames processed: ' + str(currFrame) + ', camera exposure: ' + str(camera_exposure), end='\r')
                 sys.stdout.flush()
                 if(args.show):
                     cv2.namedWindow('Demo', cv2.WINDOW_NORMAL)
