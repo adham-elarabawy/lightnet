@@ -255,6 +255,7 @@ def YOLO(args):
         except Exception:
             pass
     fileType = 3
+    output = 'liveVideo_proc.avi'
     if not args.source == "0":
         fileType = checkType(args.source)
         if not fileType == 2:
