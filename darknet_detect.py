@@ -414,6 +414,8 @@ def YOLO(args):
                 sys.stdout.flush()
                 if(args.show):
                     cv2.imshow('Demo', processedFrame)
+                    cv2.namedWindow('Demo', WINDOW_NORMAL)
+                    cv2.resizeWindow('Demo', 832, 832)
         cap.release()
         out.release()
         print(profile)
