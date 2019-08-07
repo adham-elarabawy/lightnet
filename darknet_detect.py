@@ -414,7 +414,7 @@ def YOLO(args):
                 sys.stdout.flush()
                 if(args.show):
                     cv2.namedWindow('Demo', cv2.WINDOW_NORMAL)
-                    cv2.resizeWindow('Demo', 832, 832)
+                    cv2.resizeWindow('Demo', 1664, 1664)
                     cv2.imshow('Demo', processedFrame)
         cap.release()
         out.release()
