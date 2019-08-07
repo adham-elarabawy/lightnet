@@ -55,7 +55,7 @@ def arg_parse():
     parser.add_argument('--resize', dest='resize', action='store_true',
                         help='resize processed frames to dimensions of the neural network')
     parser.add_argument('--exposure', dest='exposure', help='desired camera exposure(only for live webcam detection). --autoexpose WILL OVERRIDE THIS SETTING',
-                        default=0.02, type=int),
+                        default=0.02, type=float),
     parser.add_argument('--autoexpose', dest='autoexpose', action='store_true',
                         help='enable autoexposure on the camera. WILL OVERRIDE --exposure')
 
