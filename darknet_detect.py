@@ -408,7 +408,7 @@ def YOLO(args):
                 # add processed frame to the output file
                 out.write(processedFrame)
                 profile[4] = profile[4] + (_time.time() - tempPrev)
-                camera_exposure = cap.get(cv2.CV_CAP_PROP_EXPOSURE)
+                camera_exposure = cap.get(15)
                 print('avg inference fps: ' + str(int(currFrame/(profile[2]))) + ', actual fps: ' + str(int(1/(_time.time()-prev_time))) +
                       ', frames processed: ' + str(currFrame) + ', camera exposure: ' + str(camera_exposure), end='\r')
                 sys.stdout.flush()
