@@ -393,7 +393,6 @@ def YOLO(args):
             if cv2.waitKey(1) & 0xFF == ord('q'):  # press q to quit
                 break
             if(ret):
-                print('Entered YOLO Loop with valid frame.')
                 if currFrame == 0:
                     height, width, channels = frame_read.shape
                     out = cv2.VideoWriter(
