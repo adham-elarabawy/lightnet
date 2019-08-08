@@ -171,6 +171,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     tempPrev = _time.time()
     detections = darknet.detect_image(
         netMain, metaMain, darknet_image, debug=False)
+    print(detections)
     profile[2] = profile[2] + (_time.time() - tempPrev)
     tempPrev = _time.time()
     # draw bounding boxes on the processed frame
