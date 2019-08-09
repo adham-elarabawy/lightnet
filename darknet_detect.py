@@ -35,10 +35,8 @@ def arg_parse():
     parser.add_argument('--src', dest='source', help='path of the file/directory(of images) that the model is being tested on(include the filename and filetype) [SET TO 0 FOR WEBCAM USE(not tested)] \n *If passing in directory, ALL files in directory MUST BE valid images',
                         required=True, type=str),
     parser.add_argument('--bs', dest='bs', help='Batch size', default=1),
-    # parser.add_argument('--confidence', dest='confidence',
-    #                     help='Object Confidence to filter predictions', default=0.25),
-    # parser.add_argument('--nms_thresh', dest='nms_thresh',
-    #                     help='NMS Threshhold', default=0.45),
+    parser.add_argument('--thresh', dest='thresh',
+                        help='Object Confidence to filter predictions', default=0.5),
     parser.add_argument('--cfg', dest='cfg', help='Config file',
                         required=True, type=str),
     parser.add_argument('--weights', dest='weights', help='weightsfile',
@@ -170,7 +168,7 @@ def processFrame(frameToProcess, args, darknet_image, netMain, tempPrev):
     profile[1] = profile[1] + (_time.time() - tempPrev)
     tempPrev = _time.time()
     detections = darknet.detect_image(
-        netMain, metaMain, darknet_image, debug=False)
+        netMain, metaMain, darknet_image, debug=False, thresh=args.thresh)
     profile[2] = profile[2] + (_time.time() - tempPrev)
     tempPrev = _time.time()
     # draw bounding boxes on the processed frame
